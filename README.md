@@ -1,0 +1,1 @@
+# MastiFore-Multimodal-Forecasting-of-Bovine-Mastitis-Risk
