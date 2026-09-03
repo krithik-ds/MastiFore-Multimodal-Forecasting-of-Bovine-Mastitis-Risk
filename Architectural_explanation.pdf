@@ -1,0 +1,798 @@
+MastiFore — System Architecture & Workflow
+1. System Architecture Overview
+
+MastiFore is a multimodal AI-driven cattle health monitoring system designed for the early screening and risk stratification of bovine mastitis.
+
+The system combines animal identification, milk-quality parameters, behavioural indicators, computer vision, thermal imaging, and temporal analysis rather than relying on a single diagnostic parameter.
+
+The architecture follows this pipeline:
+
+Animal → Data Acquisition → Preprocessing → Modality-Specific AI → Multimodal Fusion → Three-Tier Decision Engine → Alert & Visualization → Veterinary Validation → Feedback
+
+The system is designed as a closed-loop decision-support platform. AI identifies abnormal patterns and estimates risk, while veterinary examination remains the final validation step.
+
+2. High-Level Architecture
+                         ┌──────────────────────┐
+                         │       CATTLE         │
+                         │   Individual Animal  │
+                         └──────────┬───────────┘
+                                    │
+                                    ▼
+                    ┌───────────────────────────┐
+                    │  1. ANIMAL IDENTIFICATION │
+                    │          RFID / ID         │
+                    └─────────────┬─────────────┘
+                                  │
+                                  ▼
+                 ┌─────────────────────────────────┐
+                 │       2. DATA ACQUISITION        │
+                 │                                 │
+                 │ Milk Sensors │ CCTV │ Thermal  │
+                 │ Milk Yield   │ Behaviour        │
+                 │ Rumination   │ Activity         │
+                 └──────────────┬──────────────────┘
+                                │
+                                ▼
+                 ┌─────────────────────────────────┐
+                 │      3. DATA PREPROCESSING       │
+                 │                                 │
+                 │ Filtering │ Cleaning │ Syncing  │
+                 │ Normalization │ Feature Extract │
+                 └──────────────┬──────────────────┘
+                                │
+                                ▼
+              ┌──────────────────────────────────────┐
+              │       4. MODALITY-SPECIFIC AI        │
+              │                                      │
+              │ Sensor AI → Milk/Physiological Risk │
+              │ Vision AI → Visual/Behaviour Risk   │
+              │ Thermal AI → Thermal Risk            │
+              │ Time-Series AI → Trend/Deviation    │
+              └──────────────────┬───────────────────┘
+                                 │
+                                 ▼
+                    ┌────────────────────────┐
+                    │ 5. MULTIMODAL FUSION   │
+                    │                        │
+                    │ Combine independent    │
+                    │ evidence from multiple │
+                    │ modalities             │
+                    └────────────┬───────────┘
+                                 │
+                                 ▼
+                    ┌────────────────────────┐
+                    │ 6. RISK ASSESSMENT     │
+                    │                        │
+                    │ Low │ Moderate │ High  │
+                    └────────────┬───────────┘
+                                 │
+                                 ▼
+              ┌────────────────────────────────────┐
+              │       7. THREE-TIER ENGINE         │
+              │                                    │
+              │ Tier 1 → Early Screening           │
+              │ Tier 2 → Multimodal Validation     │
+              │ Tier 3 → Veterinary Validation     │
+              └─────────────────┬──────────────────┘
+                                │
+                                ▼
+                  ┌──────────────────────────┐
+                  │   8. ACTION & ALERT      │
+                  │                          │
+                  │ Dashboard │ SMS │ Vet    │
+                  └────────────┬─────────────┘
+                               │
+                               ▼
+                  ┌──────────────────────────┐
+                  │ 9. VETERINARY OUTCOME     │
+                  │                          │
+                  │ Confirmed │ Rejected     │
+                  │ Follow-up │ Treatment    │
+                  └────────────┬─────────────┘
+                               │
+                               ▼
+                  ┌──────────────────────────┐
+                  │ 10. FEEDBACK & LEARNING   │
+                  │                          │
+                  │ Store outcome → Improve  │
+                  │ dataset/model over time  │
+                  └──────────────────────────┘
+3. Layer 1 — Animal Identification
+
+The first requirement is to ensure that every observation belongs to the correct animal.
+
+RFID-Based Identification
+
+Each cattle is assigned a unique RFID identifier.
+
+When the animal enters a monitored area, the RFID reader identifies it and associates the incoming observations with its digital health profile.
+
+Cow enters monitoring zone
+          ↓
+RFID detected
+          ↓
+Animal ID retrieved
+          ↓
+Sensor + video data linked to animal
+          ↓
+Animal-specific health record updated
+Why this is important
+
+Without reliable animal identification, data from different cows could be mixed, resulting in incorrect risk predictions.
+
+Each animal therefore maintains an individual longitudinal profile containing:
+
+Animal ID
+Milk parameters
+Milk yield
+Behaviour
+Rumination/activity
+Visual observations
+Thermal observations
+Historical risk scores
+Previous alerts
+Veterinary outcomes
+4. Layer 2 — Multimodal Data Acquisition
+
+MastiFore collects multiple complementary signals.
+
+A. Milk Parameters
+
+The system can monitor:
+
+Milk temperature
+Milk pH
+Milk conductivity
+Milk yield
+
+These parameters provide information about changes in milk characteristics and production behaviour.
+
+Instead of interpreting one measurement independently, MastiFore observes changes relative to the animal's normal pattern.
+
+B. Behavioural Parameters
+
+Behavioural changes can provide early indications of health abnormalities.
+
+Possible parameters include:
+
+Rumination duration
+Activity level
+Feeding behaviour
+Resting behaviour
+Movement patterns
+Gait/posture abnormalities
+
+For example:
+
+Normal baseline
+     ↓
+Gradual reduction in rumination
+     +
+Reduced activity
+     +
+Milk yield deviation
+     ↓
+Increased health-risk evidence
+C. CCTV / Computer Vision
+
+Existing farm CCTV cameras can be used wherever camera placement and image quality permit.
+
+The vision pipeline can analyse:
+
+Cow detection
+Cow tracking
+Body movement
+Activity
+Gait/posture
+Udder-region appearance
+Behavioural deviations
+
+The objective is to reuse existing infrastructure rather than requiring specialized smart cameras for every monitoring function.
+
+D. Thermal Imaging
+
+A thermal camera can provide temperature-distribution information, particularly around the udder region.
+
+The system can analyse:
+
+Temperature distribution
+Left-right asymmetry
+Localized thermal abnormalities
+Temporal temperature changes
+
+Thermal information acts as an additional evidence modality, not as a standalone diagnosis.
+
+5. Layer 3 — Data Preprocessing
+
+Raw sensor and video data cannot directly be provided to the AI models.
+
+The preprocessing layer converts raw streams into reliable, synchronized inputs.
+
+Sensor Processing
+Raw Sensor Data
+      ↓
+Noise Removal
+      ↓
+Outlier Detection
+      ↓
+Missing Data Handling
+      ↓
+Calibration / Normalization
+      ↓
+Temporal Alignment
+      ↓
+Feature Extraction
+
+Possible features include:
+
+Current value
+Moving average
+Rate of change
+Deviation from baseline
+Short-term trend
+Long-term trend
+Video Processing
+Video Stream
+     ↓
+Frame Extraction
+     ↓
+Cow Detection
+     ↓
+Cow Tracking
+     ↓
+Animal-ID Association
+     ↓
+Region of Interest Extraction
+     ↓
+Feature Extraction
+
+This prevents the AI model from processing the entire farm video unnecessarily.
+
+6. Layer 4 — Animal-Specific Baseline
+
+One of the important architectural improvements is to avoid treating every cow as identical.
+
+Different cattle can naturally have different:
+
+Milk yields
+Conductivity values
+Activity levels
+Rumination patterns
+Body temperatures
+
+Therefore, MastiFore can maintain an individual baseline for each animal.
+
+Example
+
+Instead of:
+
+Conductivity > X = abnormal
+
+the system can consider:
+
+Conductivity is significantly higher than this cow's established normal range.
+
+Similarly:
+
+Current rumination is substantially below the animal's recent baseline.
+
+This enables personalized anomaly detection.
+
+7. Layer 5 — Modality-Specific AI
+
+Each data type is first processed by a model appropriate to that modality.
+
+Sensor / Time-Series Model
+
+Inputs:
+
+pH
+Conductivity
+Temperature
+Milk yield
+
+The model learns temporal relationships and identifies deviations from normal patterns.
+
+Output:
+
+Sensor-based risk score
+
+Behaviour Model
+
+Inputs:
+
+Activity
+Rumination
+Feeding
+Movement
+
+The model identifies behavioural deviations.
+
+Output:
+
+Behavioural risk score
+
+Computer Vision Model
+
+Inputs:
+
+CCTV frames
+Udder-region images
+Movement sequences
+
+The model extracts visual abnormalities and behavioural cues.
+
+Output:
+
+Vision-based risk score
+
+Thermal Model
+
+Inputs:
+
+Thermal frames
+Udder temperature distribution
+
+The model identifies thermal anomalies and asymmetry.
+
+Output:
+
+Thermal risk score
+
+8. Layer 6 — Multimodal Fusion Engine
+
+This is the central intelligence layer of MastiFore.
+
+A single parameter can produce false alarms.
+
+For example:
+
+High conductivity
+       ↓
+Could indicate abnormality
+       OR
+Could be measurement/environmental variation
+
+Instead, MastiFore combines independent evidence.
+
+Sensor AI ─────────┐
+                   │
+Behaviour AI ──────┤
+                   │
+Vision AI ─────────┤──→ MULTIMODAL FUSION
+                   │
+Thermal AI ────────┤
+                   │
+Temporal Analysis ─┘
+                         ↓
+                  Unified Risk Score
+
+The fusion engine considers:
+
+Individual modality confidence
+Agreement between modalities
+Temporal consistency
+Animal-specific baseline
+Missing modalities
+Model uncertainty
+Important principle
+
+One abnormal signal should not automatically mean mastitis.
+
+Confidence should increase when multiple independent modalities show consistent evidence.
+
+9. Layer 7 — Risk Assessment
+
+The fusion engine produces a continuous risk estimate.
+
+For example:
+
+                RISK SCORE
+                   │
+      0 ──────────┼────────── 100
+                   │
+       LOW         │   HIGH
+        │          │      │
+      0–30       31–60   61–100
+
+These ranges are illustrative. Final thresholds should be determined using validation data and operating requirements.
+
+The system should provide both:
+
+Risk
+
+How strongly the available evidence indicates an abnormal condition.
+
+Confidence
+
+How reliable the prediction is based on:
+
+Data quality
+Model confidence
+Number of available modalities
+Cross-modal agreement
+
+This distinction is important.
+
+A system may have:
+
+High risk + low confidence
+
+if only one noisy modality is available.
+
+10. Layer 8 — Three-Tier Decision Engine
+
+The three-tier architecture is used to balance early detection and false-alarm control.
+
+TIER 1 — EARLY SCREENING
+Objective
+
+Identify cattle that show early deviations from their normal state.
+
+Inputs
+
+Primarily low-cost/continuously available signals:
+
+Milk parameters
+Milk yield
+Activity
+Rumination
+Behaviour
+Output
+Normal
+   ↓
+Continue monitoring
+
+Suspicious
+   ↓
+Escalate to Tier 2
+
+Tier 1 is intentionally designed as a screening stage, not a diagnosis.
+
+TIER 2 — MULTIMODAL VALIDATION
+
+When Tier 1 detects suspicious behaviour, additional evidence is analysed.
+
+Possible inputs:
+
+CCTV
+Udder-region vision
+Thermal imaging
+Behavioural trends
+Sensor history
+
+The system checks whether the signals are consistent.
+
+Example
+Conductivity ↑
+Milk yield ↓
+Rumination ↓
+       +
+Thermal asymmetry ↑
+       ↓
+Cross-modal agreement
+       ↓
+Higher confidence
+
+But:
+
+Conductivity ↑
+       +
+Normal behaviour
+       +
+Normal thermal pattern
+       ↓
+Low cross-modal agreement
+       ↓
+Continue monitoring / lower confidence
+
+This stage helps reduce unnecessary alerts.
+
+TIER 3 — VETERINARY VALIDATION
+
+Tier 3 is the final escalation stage.
+
+The system prepares an evidence summary for the veterinarian.
+
+Veterinary evidence report
+Animal ID: C-024
+
+Risk: HIGH
+
+Observed deviations:
+• Milk conductivity ↑
+• Milk yield ↓
+• Rumination ↓
+• Thermal asymmetry detected
+
+Trend:
+Abnormality increasing over previous observations
+
+AI recommendation:
+Veterinary examination recommended
+
+The veterinarian then performs appropriate clinical examination and/or confirmatory testing.
+
+The AI system does not replace veterinary diagnosis.
+
+11. Layer 9 — Alert & Communication System
+
+The output should be converted into an actionable alert.
+
+Farmer Dashboard
+
+The dashboard provides:
+
+Overall herd health
+Individual animal status
+Risk level
+Parameter trends
+Historical alerts
+Animal health timeline
+Veterinary recommendations/status
+Local-Language SMS
+
+Small-scale farmers may not continuously monitor a dashboard.
+
+Therefore, high-priority alerts can also be delivered through SMS in the farmer's preferred language.
+
+Example:
+
+Cow C-024 shows a high risk of mastitis. Veterinary examination is recommended.
+
+This makes the system accessible beyond users who actively use a web dashboard.
+
+12. Layer 10 — Veterinary Feedback Loop
+
+The architecture should not stop after generating an alert.
+
+The veterinary outcome becomes valuable labelled information.
+
+AI Risk Prediction
+        ↓
+Veterinary Examination
+        ↓
+┌───────────────┐
+│   Outcome     │
+├───────────────┤
+│ Confirmed     │
+│ Not confirmed │
+│ Follow-up     │
+└───────┬───────┘
+        ↓
+Store outcome
+        ↓
+Build labelled dataset
+        ↓
+Model evaluation / retraining
+        ↓
+Improved future predictions
+
+This creates a closed-loop learning architecture.
+
+13. Central Data Layer
+
+All observations are stored against the animal's unique ID.
+
+Suggested data structure
+Animal
+ ├── Identification
+ ├── Sensor Records
+ ├── Milk Records
+ ├── Behaviour Records
+ ├── Video Features
+ ├── Thermal Features
+ ├── Risk Scores
+ ├── Alerts
+ └── Veterinary Outcomes
+
+This allows longitudinal analysis rather than isolated prediction.
+
+14. End-to-End Workflow
+Step 1 — Identify the Animal
+
+Cow enters the monitored zone.
+
+↓
+
+RFID reader identifies the animal.
+
+↓
+
+System loads the animal's historical profile.
+
+Step 2 — Collect Data
+
+The system collects available:
+
+Milk parameters
+Milk yield
+Behaviour
+Rumination/activity
+CCTV observations
+Thermal observations
+Step 3 — Preprocess
+
+Raw data is:
+
+Cleaned
+Filtered
+Normalized
+Time-aligned
+Associated with the correct animal
+Step 4 — Compare Against Baseline
+
+Current observations are compared with:
+
+Animal's historical baseline
+Recent trends
+Relevant population-level patterns
+
+↓
+
+Abnormal deviations are identified.
+
+Step 5 — Run AI Models
+
+Different AI models analyse different modalities.
+
+Milk/Sensor ──→ Sensor Model ──→ Risk
+Behaviour ────→ Behaviour Model → Risk
+CCTV ─────────→ Vision Model ───→ Risk
+Thermal ──────→ Thermal Model ──→ Risk
+Step 6 — Fuse Evidence
+
+The fusion engine combines model outputs.
+
+↓
+
+Produces:
+
+Overall risk + confidence + supporting evidence
+
+Step 7 — Tier 1 Screening
+
+If the risk is low:
+
+Continue routine monitoring.
+
+If suspicious:
+
+Escalate to Tier 2.
+
+Step 8 — Tier 2 Validation
+
+Additional modalities are analysed.
+
+↓
+
+If evidence is inconsistent:
+
+Continue monitoring / lower-confidence alert.
+
+If evidence is consistent:
+
+Escalate to Tier 3.
+
+Step 9 — Veterinary Escalation
+
+The system generates an evidence-based veterinary alert.
+
+↓
+
+Veterinarian examines the animal.
+
+↓
+
+Clinical/confirmatory result is recorded.
+
+Step 10 — Feedback
+
+The confirmed outcome is stored.
+
+↓
+
+The outcome becomes labelled information for:
+
+Performance evaluation
+Threshold optimization
+Dataset expansion
+Future model improvement
+15. Complete Workflow in One Diagram
+                       ┌───────────┐
+                       │   COW     │
+                       └─────┬─────┘
+                             ↓
+                       ┌───────────┐
+                       │ RFID / ID │
+                       └─────┬─────┘
+                             ↓
+                 ┌──────────────────────┐
+                 │ MULTIMODAL DATA      │
+                 │                      │
+                 │ Milk │ CCTV │ Thermal│
+                 │ Yield│ Behaviour     │
+                 │ Rumination / Activity│
+                 └──────────┬───────────┘
+                            ↓
+                 ┌──────────────────────┐
+                 │ PREPROCESSING        │
+                 │ Clean • Sync • Filter│
+                 └──────────┬───────────┘
+                            ↓
+                 ┌──────────────────────┐
+                 │ ANIMAL BASELINE      │
+                 │ Trend + Deviation    │
+                 └──────────┬───────────┘
+                            ↓
+            ┌───────────────┼────────────────┐
+            ↓               ↓                ↓
+       SENSOR AI       VISION AI        BEHAVIOUR AI
+            │               │                │
+            └───────────────┼────────────────┘
+                            ↓
+                     THERMAL AI
+                            │
+                            ↓
+                 ┌──────────────────────┐
+                 │ MULTIMODAL FUSION    │
+                 └──────────┬───────────┘
+                            ↓
+                 ┌──────────────────────┐
+                 │ RISK + CONFIDENCE    │
+                 └──────────┬───────────┘
+                            ↓
+              ┌────────────────────────────┐
+              │     THREE-TIER ENGINE      │
+              ├────────────────────────────┤
+              │ TIER 1 — SCREEN            │
+              │           ↓                │
+              │ TIER 2 — VALIDATE          │
+              │           ↓                │
+              │ TIER 3 — VETERINARY       │
+              └─────────────┬──────────────┘
+                            ↓
+                 ┌──────────────────────┐
+                 │ ACTION / ALERT       │
+                 │ Dashboard • SMS • Vet│
+                 └──────────┬───────────┘
+                            ↓
+                 ┌──────────────────────┐
+                 │ VETERINARY OUTCOME   │
+                 └──────────┬───────────┘
+                            ↓
+                 ┌──────────────────────┐
+                 │ FEEDBACK / LEARNING  │
+                 └──────────┬───────────┘
+                            │
+                            └──────→ MODEL
+                                     IMPROVEMENT
+16. Why This Architecture?
+
+MastiFore's architecture addresses five major limitations of conventional approaches:
+
+1. Single-parameter dependency
+
+Instead of relying on one indicator, multiple modalities are combined.
+
+2. Delayed detection
+
+Continuous monitoring enables detection of deviations before obvious clinical signs become prominent.
+
+3. False alarms
+
+The three-tier architecture progressively increases evidence requirements.
+
+4. Generic thresholds
+
+Animal-specific baselines allow deviations to be interpreted relative to each cow's normal behaviour.
+
+5. AI without clinical validation
+
+Tier 3 explicitly incorporates veterinary confirmation rather than presenting AI output as a definitive diagnosis.
+
+17. Core Design Principle
+
+The complete MastiFore architecture can be summarized as:
+
+Identify → Observe → Compare → Analyse → Fuse → Screen → Validate → Escalate → Confirm → Learn
