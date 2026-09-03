@@ -1,0 +1,61 @@
+{
+  "model_type": "Multivariate Logistic Sensor Model (Low-Cost Tier-2)",
+  "features": [
+    "Milk_Temperature",
+    "Milk_pH",
+    "Milk_Conductivity",
+    "Milk_Yield",
+    "Clotting"
+  ],
+  "excluded_features": [
+    "Somatic_Cell_Count (Requires expensive lab testing)"
+  ],
+  "means": [
+    36.064,
+    6.7461,
+    5.1354,
+    17.9654,
+    0.1674
+  ],
+  "stds": [
+    1.1525,
+    0.2123,
+    0.9398,
+    5.2946,
+    0.3737
+  ],
+  "standardized_weights": [
+    0.994,
+    0.9345,
+    1.1165,
+    -0.818,
+    1.0317
+  ],
+  "bias": -2.4146,
+  "feature_importances_pct": {
+    "Milk_Conductivity": 22.81,
+    "Clotting": 21.08,
+    "Milk_Temperature": 20.31,
+    "Milk_pH": 19.09,
+    "Milk_Yield": 16.71
+  },
+  "evaluation_metrics": {
+    "accuracy": 100.0,
+    "precision": 100.0,
+    "recall_sensitivity": 100.0,
+    "specificity": 100.0,
+    "f1_score": 100.0,
+    "roc_auc": 100.0,
+    "confusion_matrix": {
+      "tp": 34,
+      "tn": 127,
+      "fp": 0,
+      "fn": 0
+    }
+  },
+  "dataset_statistics": {
+    "total_records": 800,
+    "training_samples": 639,
+    "testing_samples": 161
+  }
+}

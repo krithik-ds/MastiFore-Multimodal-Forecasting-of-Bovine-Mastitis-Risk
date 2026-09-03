@@ -1,0 +1,269 @@
+{
+  "Baseline (All 6 Features)": {
+    "features": [
+      "Milk_Temperature",
+      "Milk_pH",
+      "Milk_Conductivity",
+      "Somatic_Cell_Count",
+      "Milk_Yield",
+      "Clotting"
+    ],
+    "metrics": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    }
+  },
+  "lofo_ablation": {
+    "Without Milk_Temperature": {
+      "removed": "Milk_Temperature",
+      "metrics": {
+        "accuracy": 100.0,
+        "recall_sensitivity": 100.0,
+        "precision": 100.0,
+        "f1_score": 100.0,
+        "roc_auc": 100.0
+      }
+    },
+    "Without Milk_pH": {
+      "removed": "Milk_pH",
+      "metrics": {
+        "accuracy": 100.0,
+        "recall_sensitivity": 100.0,
+        "precision": 100.0,
+        "f1_score": 100.0,
+        "roc_auc": 100.0
+      }
+    },
+    "Without Milk_Conductivity": {
+      "removed": "Milk_Conductivity",
+      "metrics": {
+        "accuracy": 100.0,
+        "recall_sensitivity": 100.0,
+        "precision": 100.0,
+        "f1_score": 100.0,
+        "roc_auc": 100.0
+      }
+    },
+    "Without Somatic_Cell_Count": {
+      "removed": "Somatic_Cell_Count",
+      "metrics": {
+        "accuracy": 100.0,
+        "recall_sensitivity": 100.0,
+        "precision": 100.0,
+        "f1_score": 100.0,
+        "roc_auc": 100.0
+      }
+    },
+    "Without Milk_Yield": {
+      "removed": "Milk_Yield",
+      "metrics": {
+        "accuracy": 100.0,
+        "recall_sensitivity": 100.0,
+        "precision": 100.0,
+        "f1_score": 100.0,
+        "roc_auc": 100.0
+      }
+    },
+    "Without Clotting": {
+      "removed": "Clotting",
+      "metrics": {
+        "accuracy": 100.0,
+        "recall_sensitivity": 100.0,
+        "precision": 100.0,
+        "f1_score": 100.0,
+        "roc_auc": 100.0
+      }
+    }
+  },
+  "hardware_5_sensor": {
+    "accuracy": 100.0,
+    "recall_sensitivity": 100.0,
+    "precision": 100.0,
+    "f1_score": 100.0,
+    "roc_auc": 100.0
+  },
+  "single_sensor_ablation": {
+    "Temp": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH": {
+      "accuracy": 98.76,
+      "recall_sensitivity": 94.12,
+      "precision": 100.0,
+      "f1_score": 96.97,
+      "roc_auc": 99.9
+    },
+    "EC": {
+      "accuracy": 98.76,
+      "recall_sensitivity": 94.12,
+      "precision": 100.0,
+      "f1_score": 96.97,
+      "roc_auc": 100.0
+    },
+    "Yield": {
+      "accuracy": 98.76,
+      "recall_sensitivity": 97.06,
+      "precision": 97.06,
+      "f1_score": 97.06,
+      "roc_auc": 99.85
+    },
+    "Clot": {
+      "accuracy": 98.14,
+      "recall_sensitivity": 91.18,
+      "precision": 100.0,
+      "f1_score": 95.38,
+      "roc_auc": 95.59
+    }
+  },
+  "pair_permutations": {
+    "Temp+pH": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+EC": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+Yield": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+Clot": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+EC": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+Yield": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+Clot": {
+      "accuracy": 99.38,
+      "recall_sensitivity": 97.06,
+      "precision": 100.0,
+      "f1_score": 98.51,
+      "roc_auc": 99.92
+    },
+    "EC+Yield": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "EC+Clot": {
+      "accuracy": 98.76,
+      "recall_sensitivity": 94.12,
+      "precision": 100.0,
+      "f1_score": 96.97,
+      "roc_auc": 100.0
+    },
+    "Yield+Clot": {
+      "accuracy": 98.76,
+      "recall_sensitivity": 94.12,
+      "precision": 100.0,
+      "f1_score": 96.97,
+      "roc_auc": 99.98
+    }
+  },
+  "triplet_permutations": {
+    "Temp+pH+EC": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+pH+Yield": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+pH+Clot": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+EC+Yield": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+EC+Clot": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+Yield+Clot": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+EC+Yield": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+EC+Clot": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+Yield+Clot": {
+      "accuracy": 99.38,
+      "recall_sensitivity": 97.06,
+      "precision": 100.0,
+      "f1_score": 98.51,
+      "roc_auc": 100.0
+    },
+    "EC+Yield+Clot": {
+      "accuracy": 100.0,
+      "recall_sensitivity": 100.0,
+      "precision": 100.0,
+      "f1_score": 100.0,
+      "roc_auc": 100.0
+    }
+  }
+}
