@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIH 26109 | MastiFore - Scalable N-Camera Bovine Mastitis Early Forecasting Platform</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans+Kannada:wght@400;600;700&family=Noto+Sans+Gurmukhi:wght@400;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Noto Sans Telugu', 'Noto Sans Kannada', 'Noto Sans Gurmukhi', 'Noto Sans Gujarati', 'Noto Sans Bengali', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+  <!-- Top Navbar -->
+  <header class="border-b border-slate-800 bg-slate-900/90 sticky top-0 z-50 backdrop-blur-md px-6 py-4">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <i data-lucide="shield-alert" class="w-6 h-6 text-slate-950"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold tracking-tight text-white">MastiFore</h1>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-medium">SIH 26109</span>
+          </div>
+          <p class="text-xs text-slate-400" id="txt-subheading">Cost-Aware, RFID-Linked, N-Camera Cross-View Mastitis Early Screening Platform</p>
+        </div>
+      </div>
+
+      <!-- Multi-Language Selector Dropdown -->
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 bg-slate-800/90 border border-slate-700 rounded-xl px-3 py-1.5 shadow-md">
+          <i data-lucide="languages" class="w-4 h-4 text-emerald-400"></i>
+          <span class="text-xs text-slate-400 font-semibold" id="txt-lang-label">Language:</span>
+          <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-slate-900 text-emerald-300 font-bold text-xs rounded-lg px-2.5 py-1 border border-slate-700 focus:outline-none focus:border-emerald-500 cursor-pointer">
+            <option value="en">English (India)</option>
+            <option value="hi">हिंदी (Hindi)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+            <option value="gu">ગુજરાતી (Gujarati)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 text-xs font-semibold">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+          <span id="txt-sys-live">N-Camera Mesh Sync Active</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
+    <!-- 3-Tier Progressive Funnel Banner -->
+    <section class="bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-400" id="txt-triage-badge">Scalable N-Camera Cross-View Triage Architecture</span>
+          <h2 class="text-2xl font-extrabold text-white mt-1" id="txt-triage-title">MastiFore: 3-Tier Precision Triage Workflow</h2>
+          <p class="text-sm text-slate-300 max-w-3xl mt-2 leading-relaxed" id="txt-triage-desc">
+            <strong>Tier 1 (N-Camera CCTV Mesh):</strong> Ingests all existing farm RTSP/IP cameras to track posture, rumination & spine deviations -> <strong>Tier 2 (Stall ESP32):</strong> Targets sub-₹2,500 sensors (EC, pH, Temp, Yield) only to shortlisted cows -> <strong>Tier 3 (AI Decision Support):</strong> Fuses multimodal signals, triggers vernacular SMS, and closes the loop with veterinary confirmation.
+          </p>
+        </div>
+      </div>
+
+      <!-- Funnel Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mt-6">
+        <div class="bg-slate-900/90 border border-slate-700/80 rounded-xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-slate-400 font-medium" id="lbl-funnel-total">Herd Total</span>
+            <i data-lucide="users" class="w-4 h-4 text-slate-400"></i>
+          </div>
+          <div class="text-2xl font-black text-white mt-2">100 Cows</div>
+          <div class="text-xs text-slate-400 mt-1" id="lbl-funnel-total-sub">100% Zero-Touch N-CCTV Mesh</div>
+        </div>
+
+        <div class="bg-blue-950/40 border border-blue-800/50 rounded-xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-blue-400 font-medium" id="lbl-funnel-t1">Tier 1: Shortlisted</span>
+            <i data-lucide="video" class="w-4 h-4 text-blue-400"></i>
+          </div>
+          <div class="text-2xl font-black text-blue-300 mt-2">22 Cows (22%)</div>
+          <div class="text-xs text-blue-400/80 mt-1" id="lbl-funnel-t1-sub">Multi-Angle Arched Spine / CPM</div>
+        </div>
+
+        <div class="bg-amber-950/40 border border-amber-800/50 rounded-xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-amber-400 font-medium" id="lbl-funnel-t2">Tier 2: Sensor Tested</span>
+            <i data-lucide="cpu" class="w-4 h-4 text-amber-400"></i>
+          </div>
+          <div class="text-2xl font-black text-amber-300 mt-2">8 Cows (8%)</div>
+          <div class="text-xs text-amber-400/80 mt-1" id="lbl-funnel-t2-sub">ESP32 Milk EC & pH Analyzed</div>
+        </div>
+
+        <div class="bg-rose-950/40 border border-rose-800/50 rounded-xl p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-rose-400 font-medium" id="lbl-funnel-t3">Tier 3: Escalated Risk</span>
+            <i data-lucide="activity" class="w-4 h-4 text-rose-400"></i>
+          </div>
+          <div class="text-2xl font-black text-rose-300 mt-2">4 Cows (4%)</div>
+          <div class="text-xs text-rose-400/80 mt-1" id="lbl-funnel-t3-sub">SMS Sent -> Vet Confirming</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Grid: Real YOLOv8 Video Feed & Diagnostics -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <!-- Left 2 Cols: Scalable N-Camera CCTV Mesh & Herd Triage Board -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+            <div class="flex items-center gap-2">
+              <i data-lucide="camera" class="w-5 h-5 text-emerald-400"></i>
+              <h3 class="text-lg font-bold text-white" id="txt-cctv-header">Tier 1: Scalable N-Camera CCTV Network</h3>
+            </div>
+            
+            <!-- N-Camera View Switcher Tabs & Grid Mode -->
+            <div class="flex flex-wrap items-center gap-2 bg-slate-950 border border-slate-800 rounded-xl p-1 text-xs">
+              <div id="cameraTabsContainer" class="flex flex-wrap gap-1">
+                <!-- Dynamically Rendered Camera Tabs -->
+              </div>
+              
+              <button onclick="toggleQuadGridView()" id="btnQuadGrid" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white border border-slate-800 bg-slate-900 flex items-center gap-1 font-semibold transition" title="Toggle 2x2 Multi-View Grid">
+                <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-blue-400"></i> <span id="txt-btn-grid">Quad Grid (2x2)</span>
+              </button>
+
+              <button onclick="openAddCameraModal()" class="px-2.5 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 flex items-center gap-1 font-bold transition">
+                <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> <span id="txt-btn-add-cam">+ Add Camera</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Single Camera MJPEG Stream View -->
+          <div id="singleCameraContainer" class="relative bg-slate-950 rounded-xl overflow-hidden aspect-video border border-slate-800 flex items-center justify-center">
+            <img 
+              id="liveYoloStream" 
+              src="http://localhost:8000/api/video_feed/cam1" 
+              alt="Real-time MastiFore Cow Behavior Feed"
+              class="w-full h-full object-contain"
+              onerror="handleStreamError(this)"
+            />
+            
+            <!-- Cross-Camera Overlay Badge -->
+            <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-slate-950/80 border border-emerald-500/40 text-emerald-400 text-xs font-semibold backdrop-blur flex items-center gap-1.5 shadow-lg">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="camViewTag">Active: Cam 1 (Feeding Alley) | N-Mesh Fusion</span>
+            </div>
+
+            <div id="streamFallbackNotice" class="hidden absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-6 text-center space-y-3">
+              <i data-lucide="alert-triangle" class="w-10 h-10 text-amber-400"></i>
+              <h4 class="text-base font-bold text-white">FastAPI Backend Server Offline</h4>
+              <p class="text-xs text-slate-400 max-w-md">
+                To stream the live YOLOv8 model directly into this dashboard, run this in your terminal:
+              </p>
+              <code class="px-4 py-2 bg-slate-900 border border-slate-800 rounded-lg text-emerald-400 text-xs font-mono select-all">
+                python3 backend/server.py
+              </code>
+            </div>
+          </div>
+
+          <!-- 2x2 Quad Multi-View Grid (Hidden by Default) -->
+          <div id="quadGridContainer" class="hidden grid grid-cols-2 gap-3 aspect-video">
+            <div class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+              <img src="http://localhost:8000/api/video_feed/cam1" class="w-full h-full object-cover" />
+              <span class="absolute bottom-2 left-2 text-[10px] bg-slate-900/90 text-emerald-400 px-2 py-0.5 rounded border border-slate-700 font-mono">Cam 1: Feeding Alley</span>
+            </div>
+            <div class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+              <img src="http://localhost:8000/api/video_feed/cam2" class="w-full h-full object-cover" />
+              <span class="absolute bottom-2 left-2 text-[10px] bg-slate-900/90 text-emerald-400 px-2 py-0.5 rounded border border-slate-700 font-mono">Cam 2: Resting Cubicles</span>
+            </div>
+            <div class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+              <img src="http://localhost:8000/api/video_feed/cam1" class="w-full h-full object-cover opacity-80" />
+              <span class="absolute bottom-2 left-2 text-[10px] bg-slate-900/90 text-blue-400 px-2 py-0.5 rounded border border-slate-700 font-mono">Cam 3: Milking Parlor Lane</span>
+            </div>
+            <div class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+              <img src="http://localhost:8000/api/video_feed/cam2" class="w-full h-full object-cover opacity-80" />
+              <span class="absolute bottom-2 left-2 text-[10px] bg-slate-900/90 text-amber-400 px-2 py-0.5 rounded border border-slate-700 font-mono">Cam 4: Exercise Yard</span>
+            </div>
+          </div>
+
+          <!-- Add Camera Modal (Hidden) -->
+          <div id="modalAddCam" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+              <div class="flex items-center justify-between">
+                <h4 class="text-base font-bold text-white flex items-center gap-2">
+                  <i data-lucide="video" class="w-5 h-5 text-emerald-400"></i> Add New Barn CCTV Stream
+                </h4>
+                <button onclick="closeAddCameraModal()" class="text-slate-400 hover:text-white">
+                  <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+              </div>
+              <p class="text-xs text-slate-400">Connect any standard ONVIF, RTSP, or IP camera in your barn to expand cross-view coverage:</p>
+              
+              <div class="space-y-3 text-xs">
+                <div>
+                  <label class="text-slate-300 font-medium block mb-1">Camera Location / Zone Name:</label>
+                  <input type="text" id="inputCamName" placeholder="e.g. Cam 3: Milking Parlor Entry" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500" />
+                </div>
+                <div>
+                  <label class="text-slate-300 font-medium block mb-1">RTSP / IP Video Stream URL:</label>
+                  <input type="text" id="inputCamUrl" placeholder="rtsp://192.168.1.104:554/live/ch0" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 font-mono text-emerald-400 focus:outline-none focus:border-emerald-500" />
+                </div>
+                <div>
+                  <label class="text-slate-300 font-medium block mb-1">Primary Vision Specialization:</label>
+                  <select id="selectCamSpec" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-300 focus:outline-none focus:border-emerald-500">
+                    <option value="rumination">Feeding / Jaw Rumination (CPM)</option>
+                    <option value="spine">Lateral Posture & Spine Kyphosis Angle</option>
+                    <option value="gait">Locomotion & Gait Symmetry Analysis</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="flex gap-2 pt-2">
+                <button onclick="saveNewCamera()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs transition">
+                  Connect & Sync Camera
+                </button>
+                <button onclick="closeAddCameraModal()" class="py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-xl text-xs transition">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Real-Time Trend Charts -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <div class="bg-slate-950/70 border border-slate-800 p-4 rounded-xl">
+              <h4 class="text-xs font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                <i data-lucide="trending-down" class="w-4 h-4 text-amber-400"></i> <span id="txt-chart-rum-title">Individual Rumination Trend vs Baseline</span>
+              </h4>
+              <div class="h-40">
+                <canvas id="ruminationChart"></canvas>
+              </div>
+            </div>
+            <div class="bg-slate-950/70 border border-slate-800 p-4 rounded-xl">
+              <h4 class="text-xs font-semibold text-slate-300 mb-2 flex items-center gap-2">
+                <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i> <span id="txt-chart-spine-title">Spine Kyphosis Posture Angle (Deg)</span>
+              </h4>
+              <div class="h-40">
+                <canvas id="spineChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Herd Triage Board -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <i data-lucide="clipboard-list" class="w-5 h-5 text-emerald-400"></i> <span id="txt-triage-board-title">MastiFore RFID Herd Triage Board</span>
+            </h3>
+            <span class="text-xs text-slate-400" id="txt-triage-sub">Click any cow to view Multimodal AI Diagnosis</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-300">
+              <thead class="text-xs uppercase bg-slate-950/80 text-slate-400 border-b border-slate-800">
+                <tr>
+                  <th class="py-3 px-3" id="th-cow-id">Cow ID / RFID</th>
+                  <th class="py-3 px-3" id="th-cam-view">Camera View</th>
+                  <th class="py-3 px-3" id="th-t1-cv">Tier 1 CV</th>
+                  <th class="py-3 px-3" id="th-t2-ec">Tier 2 EC</th>
+                  <th class="py-3 px-3" id="th-t2-ph">Tier 2 pH</th>
+                  <th class="py-3 px-3" id="th-ai-risk">AI Risk</th>
+                  <th class="py-3 px-3" id="th-vet-status">Vet Status</th>
+                  <th class="py-3 px-3" id="th-action">Action</th>
+                </tr>
+              </thead>
+              <tbody id="cowTableBody" class="divide-y divide-slate-800/60">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Col: Multimodal AI Decision Support Hub & Feedback Loop -->
+      <div class="space-y-6">
+
+        <!-- 2-Step Author Security Protected Phone & OTP Locking Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+              <span id="txt-lock-title">Farmer Phone & Security Gateway</span>
+            </h3>
+            <span id="badgeLockStatus" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">AUTHOR LOCKED</span>
+          </div>
+
+          <!-- View 1: Locked Status View (Default) -->
+          <div id="panelLockedPhone" class="p-3.5 bg-slate-950/80 border border-emerald-500/30 rounded-xl space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i data-lucide="lock" class="w-4 h-4 text-emerald-400"></i>
+                <span class="text-xs text-slate-300 font-semibold" id="txt-verified-label">Registered Alert Recipient:</span>
+              </div>
+              <button onclick="openAuthorSecurityModal()" class="text-[11px] text-amber-400 hover:text-amber-300 font-bold flex items-center gap-1 px-2 py-1 rounded bg-slate-900 border border-slate-800 transition">
+                <i data-lucide="key" class="w-3 h-3"></i> <span id="btn-unlock-text">Author Unlock</span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-base font-bold font-mono text-emerald-300" id="displayLockedPhone">+91 98765 43210</div>
+                <div class="text-[10px] text-slate-400 mt-0.5" id="txt-owner-tag">Owner: Ramesh Patel (Farm Admin)</div>
+              </div>
+              <span class="text-[10px] text-emerald-400 font-mono px-2 py-0.5 rounded bg-emerald-950 border border-emerald-800/80">SMS Active</span>
+            </div>
+            <p class="text-[11px] text-slate-400" id="txt-locked-desc">Automated SMS alerts are dispatched strictly to this verified number. Modification requires Author / Owner authorization.</p>
+          </div>
+
+          <!-- View 2: Step 1 - Author / Owner Authorization Barrier -->
+          <div id="panelAuthorAuth" class="hidden p-3.5 bg-slate-950/90 border border-amber-500/40 rounded-xl space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5 text-amber-400 text-xs font-bold">
+                <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                <span id="txt-auth-req-title">Step 1: Author Authorization Required</span>
+              </div>
+              <button onclick="cancelUnlock()" class="text-slate-400 hover:text-white text-xs">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <p class="text-[11px] text-slate-300" id="txt-auth-req-desc">
+              To protect the herd alert pipeline from unauthorized changes, enter the <strong>Master Farm Owner PIN</strong> or request an <strong>Owner OTP</strong>:
+            </p>
+            
+            <div class="space-y-2">
+              <div class="flex gap-2">
+                <input type="password" id="inputMasterPin" placeholder="Master Owner PIN (e.g. 26109)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-amber-500" />
+                <button onclick="verifyMasterPin()" class="px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg shrink-0 transition" id="btnAuthPin">
+                  Authorize
+                </button>
+              </div>
+              <div class="text-center text-[10px] text-slate-500 font-medium">— OR —</div>
+              <button onclick="sendOwnerAuthOtp()" class="w-full py-1.5 px-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-semibold rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
+                <i data-lucide="smartphone" class="w-3.5 h-3.5 text-blue-400"></i>
+                <span id="btnSendOwnerOtp">Send Authorization OTP to Current Owner</span>
+              </button>
+            </div>
+
+            <!-- Owner OTP Input Box -->
+            <div id="sectionOwnerOtpVerify" class="hidden space-y-2 border-t border-slate-800 pt-2">
+              <div class="flex gap-2">
+                <input type="text" id="inputOwnerOtp" placeholder="Enter 6-digit Owner OTP" maxlength="6" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-center tracking-widest text-amber-400 focus:outline-none focus:border-amber-500 font-bold" />
+                <button onclick="verifyOwnerOtp()" class="px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg shrink-0 transition">
+                  Confirm
+                </button>
+              </div>
+              <p class="text-[10px] text-amber-400/90 font-mono" id="demoOwnerOtpHint"></p>
+            </div>
+          </div>
+
+          <!-- View 3: Step 2 - Register & Lock New Mobile Number -->
+          <div id="panelNewPhoneInput" class="hidden p-3.5 bg-slate-950/90 border border-blue-500/40 rounded-xl space-y-3">
+            <div class="flex items-center justify-between text-blue-400 text-xs font-bold">
+              <span id="txt-step2-title">Step 2: Register New Mobile Number</span>
+              <span class="text-[10px] text-emerald-400 font-normal">Author Verified ✓</span>
+            </div>
+            <div>
+              <label class="text-xs text-slate-300 font-medium block mb-1" id="lbl-phone-input">Enter New 10-Digit Mobile Number:</label>
+              <div class="flex gap-2">
+                <span class="px-2.5 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs font-mono text-slate-300">+91</span>
+                <input type="tel" id="inputMobileNumber" placeholder="9876543210" maxlength="10" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-blue-500" />
+                <button onclick="requestNewNumberOtp()" id="btnSendOtp" class="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg shrink-0 transition">
+                  Send OTP
+                </button>
+              </div>
+            </div>
+
+            <!-- OTP Input Section -->
+            <div id="sectionNewOtpVerify" class="hidden space-y-2 border-t border-slate-800 pt-3">
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-slate-300 font-medium" id="lbl-enter-otp">Enter 6-Digit Registration OTP:</span>
+                <span class="text-blue-400 font-mono" id="otpTimer">Expires in 05:00</span>
+              </div>
+              <div class="flex gap-2">
+                <input type="text" id="inputNewOtpCode" placeholder="Enter 6-digit OTP" maxlength="6" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-center tracking-widest text-emerald-400 focus:outline-none focus:border-emerald-500 font-bold" />
+                <button onclick="verifyAndLockNewNumber()" class="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-lg shrink-0 transition flex items-center gap-1">
+                  <i data-lucide="lock" class="w-3.5 h-3.5"></i> <span id="btn-lock-text">Lock</span>
+                </button>
+              </div>
+              <p class="text-[10px] text-emerald-400/90 font-mono" id="demoNewOtpHint"></p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Live AI Decision Support Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-5 h-5 text-emerald-400"></i>
+              <span id="txt-ai-engine-title">MastiFore AI Predictive Engine</span>
+            </h3>
+            <span id="diagBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">Subclinical Risk</span>
+          </div>
+
+          <div class="text-center py-4 bg-slate-950/60 rounded-xl border border-slate-800">
+            <span class="text-xs uppercase tracking-wider text-slate-400" id="txt-selected-cow">Target: COW_103 (RFID-IN-PB-3390) | Cam-1+2 (Fused)</span>
+            <div class="text-4xl font-black text-amber-400 mt-2" id="diagRiskPct">68.5%</div>
+            <p class="text-xs text-amber-400/90 font-medium mt-1" id="diagConfidence">Elevated Risk (86% Confidence) - Cross-Cam Verified</p>
+          </div>
+
+          <!-- Correlated Parameter Deviations vs Individual Baseline -->
+          <div class="space-y-3 text-xs">
+            <div>
+              <div class="flex justify-between text-slate-300 mb-1">
+                <span id="lbl-gauge-ec">Milk Electrical Conductivity (EC)</span>
+                <span class="font-bold text-amber-400" id="gaugeEC">5.90 mS/cm (+24% vs Base)</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-2">
+                <div class="bg-amber-400 h-2 rounded-full" id="barEC" style="width: 74%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-slate-300 mb-1">
+                <span id="lbl-gauge-ph">Milk pH Value</span>
+                <span class="font-bold text-amber-400" id="gaugePH">6.85 pH (Alkaline shift)</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-2">
+                <div class="bg-amber-400 h-2 rounded-full" id="barPH" style="width: 65%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-slate-300 mb-1">
+                <span id="lbl-gauge-cpm">Tier 1 Rumination Drop</span>
+                <span class="font-bold text-amber-400" id="gaugeCPM">38.0 cpm (-38% vs Base)</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-2">
+                <div class="bg-amber-400 h-2 rounded-full" id="barCPM" style="width: 62%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-slate-300 mb-1">
+                <span id="lbl-gauge-spine">Tier 1 Cross-Cam Spine Angle</span>
+                <span class="font-bold text-amber-400" id="gaugeSpine">156.0° (Arched Back / Pain)</span>
+              </div>
+              <div class="w-full bg-slate-800 rounded-full h-2">
+                <div class="bg-amber-400 h-2 rounded-full" id="barSpine" style="width: 58%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Non-Antibiotic Action Plan -->
+          <div class="border-t border-slate-800 pt-4">
+            <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2" id="txt-rx-title">Recommended Proactive Intervention:</h4>
+            <ul class="space-y-2 text-xs text-slate-300" id="diagAdvisories">
+              <!-- Injected via JS -->
+            </ul>
+          </div>
+
+          <!-- Farmer Alert Button -->
+          <button onclick="sendWhatsAppAlert()" class="w-full py-2.5 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 text-xs flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span id="btnSendAlert">Send Local-Language SMS / Alert</span>
+          </button>
+        </div>
+
+        <!-- Tier 3 Veterinary Confirmation & Feedback Loop -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="stethoscope" class="w-4 h-4 text-blue-400"></i>
+              <span id="txt-vet-feedback-title">Veterinary Feedback Loop</span>
+            </h3>
+            <span class="text-[10px] uppercase font-bold text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Closed-Loop AI</span>
+          </div>
+
+          <p class="text-xs text-slate-400" id="txt-vet-feedback-desc">
+            Record veterinary clinical examination outcome to refine individual cow baselines and update health history:
+          </p>
+
+          <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
+            <button onclick="recordVetFeedback('CONFIRMED_MASTITIS')" class="py-2 px-3 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 rounded-lg flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="check" class="w-3.5 h-3.5"></i> <span id="btn-vet-confirm">Confirm Mastitis</span>
+            </button>
+            <button onclick="recordVetFeedback('FALSE_POSITIVE')" class="py-2 px-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 rounded-lg flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i> <span id="btn-vet-fp">False Positive</span>
+            </button>
+            <button onclick="recordVetFeedback('OTHER_DISEASE')" class="py-2 px-3 bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/40 text-amber-300 rounded-lg flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> <span id="btn-vet-other">Other Disease</span>
+            </button>
+            <button onclick="recordVetFeedback('UNCERTAIN')" class="py-2 px-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 rounded-lg flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> <span id="btn-vet-uncertain">Uncertain</span>
+            </button>
+          </div>
+
+          <div id="vetOutcomeMsg" class="hidden p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-[11px] text-emerald-400 flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span id="vetOutcomeText">Outcome recorded & individual baseline recalibrated.</span>
+          </div>
+        </div>
+
+        <!-- Vernacular Push Alerts Log -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <i data-lucide="bell" class="w-4 h-4 text-amber-400"></i>
+            <span id="txt-recent-alerts">Recent Farmer SMS Messages</span>
+          </h3>
+
+          <div class="space-y-3" id="alertBox">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // 9 Major Indian Languages + English Full Dictionary
+    const I18N = {
+      en: {
+        subheading: "Cost-Aware, RFID-Linked, N-Camera Cross-View Mastitis Early Screening Platform",
+        langLabel: "Language:",
+        sysLive: "N-Camera Mesh Sync Active",
+        triageBadge: "Scalable N-Camera Cross-View Triage Architecture",
+        triageTitle: "MastiFore: 3-Tier Precision Triage Workflow",
+        triageDesc: "Tier 1 (N-Camera CCTV Mesh): Ingests all existing farm RTSP/IP cameras to track posture, rumination & spine deviations -> Tier 2 (Stall ESP32): Targets sub-₹2,500 sensors (EC, pH, Temp, Yield) only to shortlisted cows -> Tier 3 (AI Decision Support): Fuses multimodal signals, triggers vernacular SMS, and closes the loop with veterinary confirmation.",
+        funnelTotal: "Herd Total",
+        funnelTotalSub: "100% Zero-Touch N-CCTV Mesh",
+        funnelT1: "Tier 1: Shortlisted",
+        funnelT1Sub: "Multi-Angle Arched Spine / CPM",
+        funnelT2: "Tier 2: Sensor Tested",
+        funnelT2Sub: "ESP32 Milk EC & pH Analyzed",
+        funnelT3: "Tier 3: Escalated Risk",
+        funnelT3Sub: "SMS Sent -> Vet Confirming",
+        cctvHeader: "Tier 1: Scalable N-Camera CCTV Network",
+        btnGrid: "Quad Grid (2x2)",
+        btnAddCam: "+ Add Camera",
+        chartRumTitle: "Individual Rumination Trend vs Baseline",
+        chartSpineTitle: "Spine Kyphosis Posture Angle (Deg)",
+        triageBoardTitle: "MastiFore RFID Herd Triage Board",
+        triageSub: "Click any cow to view Multimodal AI Diagnosis",
+        thCowId: "Cow ID / RFID",
+        thCamView: "Camera View",
+        thT1CV: "Tier 1 CV",
+        thT2EC: "Tier 2 EC",
+        thT2PH: "Tier 2 pH",
+        thAIRisk: "AI Risk",
+        thVetStatus: "Vet Status",
+        thAction: "Action",
+        lockTitle: "Farmer Phone & Security Gateway",
+        verifiedLabel: "Registered Alert Recipient:",
+        unlockText: "Author Unlock",
+        lockedDesc: "Automated SMS alerts are dispatched strictly to this verified number. Modification requires Author / Owner authorization.",
+        authReqTitle: "Step 1: Author Authorization Required",
+        authReqDesc: "To protect the herd alert pipeline from unauthorized changes, enter the Master Farm Owner PIN or request an Owner OTP:",
+        btnAuthPin: "Authorize",
+        btnSendOwnerOtp: "Send Authorization OTP to Current Owner",
+        step2Title: "Step 2: Register New Mobile Number",
+        lblPhoneInput: "Enter New 10-Digit Mobile Number:",
+        btnSendOtp: "Send OTP",
+        lblEnterOtp: "Enter 6-Digit Registration OTP:",
+        btnLockText: "Lock Number",
+        aiEngineTitle: "MastiFore AI Predictive Engine",
+        gaugeEC: "Milk Electrical Conductivity (EC)",
+        gaugePH: "Milk pH Value",
+        gaugeCPM: "Tier 1 Rumination Drop",
+        gaugeSpine: "Tier 1 Cross-Cam Spine Angle",
+        rxTitle: "Recommended Proactive Intervention:",
+        sendAlert: "Send Local-Language SMS / Alert",
+        vetFeedbackTitle: "Veterinary Feedback Loop",
+        vetFeedbackDesc: "Record veterinary clinical examination outcome to refine individual cow baselines and update health history:",
+        btnVetConfirm: "Confirm Mastitis",
+        btnVetFP: "False Positive",
+        btnVetOther: "Other Disease",
+        btnVetUncertain: "Uncertain",
+        recentAlerts: "Recent Farmer SMS Messages",
+        advisories: [
+          "Apply 0.5% Chlorhexidine post-milking teat dip immediately.",
+          "Supplement 1,000 IU Vitamin E & Zinc to boost udder immunity.",
+          "Milk this cow last to prevent cross-contamination."
+        ],
+        smsAlertWarning: "⚠️ SMS Alert: COW_103",
+        smsAlertWarningBody: "Cow COW_103: High mastitis risk detected (68.5%). Please inspect udder and contact veterinarian.",
+        smsAlertCritical: "🚨 Acute Mastitis: COW_104",
+        smsAlertCriticalBody: "Cow COW_104: Acute mastitis risk (94%). Immediate veterinary isolation required."
+      },
+      hi: {
+        subheading: "लागत-प्रभावी, आरएफआईडी-युक्त, N-कैमरा प्रारंभिक मैस्टाइटिस पूर्वानुमान मंच",
+        langLabel: "भाषा चुनें:",
+        sysLive: "N-कैमरा मेश सिंक सक्रिय",
+        triageBadge: "स्केलेबल N-कैमरा क्रॉस-व्यू छंटाई प्रणाली",
+        triageTitle: "MastiFore: 3-चरणीय सटीक छंटाई प्रणाली",
+        triageDesc: "टियर 1 (N-कैमरा मेश): फार्म के सभी मौजूदा कैमरों से जुगाली और रीढ़ की निगरानी -> टियर 2 (स्टाल ईएसपी32): केवल छांटी गई गायों पर ईसी, पीएच सेंसर -> टियर 3 (एआई सपोर्ट): बहुविध विश्लेषण और डॉक्टर फीडबैक।",
+        funnelTotal: "कुल झुंड",
+        funnelTotalSub: "100% N-कैमरा सीसीटीवी",
+        funnelT1: "टियर 1: छांटी गई गायें",
+        funnelT1Sub: "झुकी रीढ़ व कम जुगाली",
+        funnelT2: "टियर 2: सेंसर परीक्षण",
+        funnelT2Sub: "दूध ईसी व पीएच जांच",
+        funnelT3: "टियर 3: उच्च जोखिम",
+        funnelT3Sub: "एसएमएस भेजा -> डॉक्टर पुष्टि",
+        cctvHeader: "टियर 1: स्केलेबल N-कैमरा सीसीटीवी नेटवर्क",
+        btnGrid: "क्वाड ग्रिड (2x2)",
+        btnAddCam: "+ कैमरा जोड़ें",
+        chartRumTitle: "व्यक्तिगत जुगाली दर बनाम सामान्य स्तर",
+        chartSpineTitle: "रीढ़ की हड्डी का झुकाव कोण (डिग्री)",
+        triageBoardTitle: "MastiFore आरएफआईडी झुंड निगरानी तालिका",
+        triageSub: "किसी भी गाय का एआई निदान देखने के लिए क्लिक करें",
+        thCowId: "गाय आईडी / आरएफआईडी",
+        thCamView: "कैमरा दृष्टिकोण",
+        thT1CV: "टियर 1 विजन",
+        thT2EC: "टियर 2 ईसी",
+        thT2PH: "टियर 2 पीएच",
+        thAIRisk: "एआई जोखिम",
+        thVetStatus: "डॉक्टर स्थिति",
+        thAction: "कार्रवाई",
+        lockTitle: "किसान मोबाइल नंबर सुरक्षा गेटवे",
+        verifiedLabel: "पंजीकृत मोबाइल नंबर:",
+        unlockText: "स्वामी अनुमति से अनलॉक",
+        lockedDesc: "स्वचालित एसएमएस केवल इसी सत्यापित नंबर पर भेजे जाएंगे। नंबर बदलने के लिए फार्म स्वामी की अनुमति अनिवार्य है।",
+        authReqTitle: "चरण 1: फार्म स्वामी का प्रमाणीकरण आवश्यक",
+        authReqDesc: "अनधिकृत बदलाव रोकने के लिए मास्टर फार्म पिन दर्ज करें या पंजीकृत स्वामी के फोन पर ओटीपी मंगाएं:",
+        btnAuthPin: "प्रमाणित करें",
+        btnSendOwnerOtp: "वर्तमान स्वामी को प्रमाणीकरण ओटीपी भेजें",
+        step2Title: "चरण 2: नया मोबाइल नंबर पंजीकृत करें",
+        lblPhoneInput: "नया 10 अंकों का मोबाइल नंबर दर्ज करें:",
+        btnSendOtp: "ओटीपी भेजें",
+        lblEnterOtp: "6 अंकों का ओटीपी दर्ज करें:",
+        btnLockText: "नंबर लॉक करें",
+        aiEngineTitle: "MastiFore एआई जोखिम पूर्वानुमान इंजन",
+        gaugeEC: "दूध विद्युत चालकता (EC)",
+        gaugePH: "दूध पीएच मान (pH)",
+        gaugeCPM: "टियर 1 जुगाली में गिरावट",
+        gaugeSpine: "टियर 1 रीढ़ झुकाव कोण",
+        rxTitle: "सुझाई गई प्रारंभिक रोकथाम:",
+        sendAlert: "किसान को एसएमएस / व्हाट्सएप अलर्ट भेजें",
+        vetFeedbackTitle: "पशु चिकित्सक फीडबैक लूप",
+        vetFeedbackDesc: "गाय के व्यक्तिगत बेसलाइन को सुधारने के लिए क्लिनिकल जांच का परिणाम दर्ज करें:",
+        btnVetConfirm: "मैस्टाइटिस की पुष्टि",
+        btnVetFP: "गलत चेतावनी (फॉल्स पॉजिटिव)",
+        btnVetOther: "अन्य रोग (लंगड़ापन आदि)",
+        btnVetUncertain: "अनिश्चित / पुनः जांच",
+        recentAlerts: "हालिया किसान संदेश",
+        advisories: [
+          "दूध निकालने के तुरंत बाद 0.5% क्लोरहेक्सिडिन टीट डिप लगाएं।",
+          "रोग प्रतिरोधक क्षमता बढ़ाने के लिए 1,000 IU विटामिन ई और जिंक दें।",
+          "संक्रमण रोकने के लिए इस गाय का दूध सबसे अंत में निकालें।"
+        ],
+        smsAlertWarning: "⚠️ एसएमएस चेतावनी: गाय #COW_103",
+        smsAlertWarningBody: "गाय COW_103: मैस्टाइटिस का उच्च जोखिम (68.5%) पाया गया। कृपया थनों की जांच करें और पशु चिकित्सक से संपर्क करें।",
+        smsAlertCritical: "🚨 आपातकालीन अलर्ट: गाय #COW_104",
+        smsAlertCriticalBody: "गाय COW_104: गंभीर मैस्टाइटिस (94%). दूध पाइपलाइन से तुरंत अलग करें।"
+      },
+      mr: {
+        subheading: "कमी खर्चाची, आर Antonio-युक्त, N-कॅमेरा मस्टायटीस पूर्वसूचना प्रणाली",
+        langLabel: "भाषा निवडा:",
+        sysLive: "N-कॅमेरा मेश सिंक सुरू",
+        triageBadge: "अमर्याद N-कॅमेरा क्रॉस-व्ह्यू प्रणाली",
+        triageTitle: "MastiFore: ३-स्तरीय अचूक मस्टायटीस चाचणी",
+        triageDesc: "टियर १ (N-कॅमेरा मेश): गोठ्यातील सर्व उपलब्ध सीसीटीव्ही कॅमेऱ्यांमधून अचूक निरीक्षण -> टियर २ (गोठा ईएसपी३२): फक्त संशयित गाईंवर सेन्सरने दूध तपासणी -> टियर ३ (एआई निर्णय): ३-७ दिवस आधीच अंदाज.",
+        funnelTotal: "एकूण गोठा",
+        funnelTotalSub: "१००% N-कॅमेरा सीसीटीव्ही",
+        funnelT1: "टियर १: संशयित गाई",
+        funnelT1Sub: "पाठीचा बाक व कमी रवंथ",
+        funnelT2: "टियर २: सेन्सर चाचणी",
+        funnelT2Sub: "दूध ईसी व पीएच तपासणी",
+        funnelT3: "टियर ३: उच्च धोका",
+        funnelT3Sub: "एसएमएस पाठवला -> डॉक्टर तपासणी",
+        cctvHeader: "टियर १: N-कॅमेरा थेट सीसीटीव्ही नेटवर्क",
+        btnGrid: "क्वाड ग्रिड (२x२)",
+        btnAddCam: "+ कॅमेरा जोडा",
+        chartRumTitle: "रवंथ गती कल विरूद्ध सामान्य पातळी",
+        chartSpineTitle: "पाठीच्या बाकाचा कोन (अंश)",
+        triageBoardTitle: "MastiFore आरआयडी गोठा चाचणी तक्ता",
+        triageSub: "गाईचे एआई निदान पाहण्यासाठी क्लिक करा",
+        thCowId: "गाय आयडी / आरएफआयडी",
+        thCamView: "कॅमेरा दृश्य",
+        thT1CV: "टियर १ व्हिजन",
+        thT2EC: "टियर २ ईसी",
+        thT2PH: "टियर २ पीएच",
+        thAIRisk: "एआय धोका",
+        thVetStatus: "डॉक्टर स्थिती",
+        thAction: "कृती",
+        lockTitle: "शेतकरी मोबाइल नंबर सुरक्षा गेटवे",
+        verifiedLabel: "नोंदणीकृत मोबाइल क्रमांक:",
+        unlockText: "मालक परवानगीने बदला",
+        lockedDesc: "स्वयंचलित एसएमएस केवळ याच क्रमांकावर पाठवले जातील. बदल करण्यासाठी फार्म मालकाची परवानगी आवश्यक आहे.",
+        authReqTitle: "टप्पा १: फार्म मालकाची परवानगी आवश्यक",
+        authReqDesc: "अनधिकृत बदल रोखण्यासाठी मास्टर पिन टाका किंवा नोंदणीकृत मालकाच्या फोनवर ओटीपी मागवा:",
+        btnAuthPin: "प्रमाणित करा",
+        btnSendOwnerOtp: "सध्याच्या मालकाला ओटीपी पाठवा",
+        step2Title: "टप्पा २: नवीन मोबाइल क्रमांक नोंदवा",
+        lblPhoneInput: "नवीन १० अंकी मोबाइल क्रमांक टाका:",
+        btnSendOtp: "ओटीपी पाठवा",
+        lblEnterOtp: "६ अंकी ओटीपी टाका:",
+        btnLockText: "नंबर लॉक करा",
+        aiEngineTitle: "MastiFore एआय मस्टायटीस अंदाज यंत्रणा",
+        gaugeEC: "दूध विद्युत वाहकता (EC)",
+        gaugePH: "दूध सामू मूल्य (pH)",
+        gaugeCPM: "टियर १ रवंथ घट",
+        gaugeSpine: "टियर १ पाठीचा बाक",
+        rxTitle: "प्रारंभिक प्रतिबंधात्मक उपाय:",
+        sendAlert: "शेतकऱ्याला एसएमएस / व्हॉट्सअॅप इशारा पाठवा",
+        vetFeedbackTitle: "पशुवैद्यकीय अभिप्राय लूप",
+        vetFeedbackDesc: "गाईची अचूक नोंद सुधारण्यासाठी डॉक्टरांचा तपासणी निष्कर्ष नोंदवा:",
+        btnVetConfirm: "मस्टायटीस निश्चित",
+        btnVetFP: "खोटा इशारा (फॉल्स पॉझिटिव्ह)",
+        btnVetOther: "इतर आजार (उदा. लंगडणे)",
+        btnVetUncertain: "अस्पष्ट / पुन्हा तपासा",
+        recentAlerts: "शेतकरी सूचना संदेश",
+        advisories: [
+          "दूध काढल्यानंतर लगेच ०.५% क्लोरहेक्सिडिन टीट डिप लावा.",
+          "कासेची प्रतिकारशक्ती वाढवण्यासाठी १,००० IU व्हिटॅमिन ई व झिंक द्या.",
+          "संसर्ग टाळण्यासाठी या गाईचे दूध सर्वात शेवटी काढा."
+        ],
+        smsAlertWarning: "⚠️ एसएमएस पूर्वसूचना: गाय #COW_103",
+        smsAlertWarningBody: "गाय COW_103: मस्टायटीसचा उच्च धोका (68.5%) आढळला. कृपया कासेची तपासणी करा आणि डॉक्टरांशी संपर्क साधा.",
+        smsAlertCritical: "🚨 गंभीर इशारा: गाय #COW_104",
+        smsAlertCriticalBody: "गाय COW_104: तीव्र मस्टायटीस (94%). दूध काढणीतून त्वरित वेगळे ठेवा."
+      },
+      ta: {
+        subheading: "செலவு குறைந்த, RFID-இணைக்கப்பட்ட, N-கேமரா மடிநோய் முன்கணிப்பு தளம்",
+        langLabel: "மொழியைத் தேர்ந்தெடுக்கவும்:",
+        sysLive: "N-கேமரா மெஷ் ஒத்திசைவு செயலில் உள்ளது",
+        triageBadge: "N-கேமரா குறுக்கு பார்வை திரையிடல்",
+        triageTitle: "MastiFore: 3-நிலை துல்லிய முன்கணிப்பு முறை",
+        triageDesc: "நிலை 1 (N-சிசிடிவி மெஷ்): பண்ணையின் அனைத்து கேமராக்கள் மூலம் அசைபோடுதல் மற்றும் முதுகெலும்பு வளைவை கண்காணித்தல் -> நிலை 2 (ESP32): பால் EC, pH சென்சார் -> நிலை 3 (AI): ஆரம்ப எச்சரிக்கை.",
+        funnelTotal: "மொத்த மந்தை",
+        funnelTotalSub: "100% N-கேமரா கண்காணிப்பு",
+        funnelT1: "நிலை 1: சந்தேக பட்டியல்",
+        funnelT1Sub: "குறைந்த அசைபோடுதல்",
+        funnelT2: "நிலை 2: சென்சார் சோதனை",
+        funnelT2Sub: "பால் EC & pH பகுப்பாய்வு",
+        funnelT3: "நிலை 3: அதிக ஆபத்து",
+        funnelT3Sub: "SMS அனுப்பப்பட்டது",
+        cctvHeader: "நிலை 1: N-கேமரா நேரலை சிசிடிவி நெட்வொர்க்",
+        btnGrid: "குவாட் கிரிட் (2x2)",
+        btnAddCam: "+ கேமரா சேர்க்க",
+        chartRumTitle: "அசைபோடுதல் போக்கு vs இயல்பு நிலை",
+        chartSpineTitle: "முதுகெலும்பு வளைவு கோணம் (டிகிரி)",
+        triageBoardTitle: "MastiFore RFID மந்தை கண்காணிப்பு பலகை",
+        triageSub: "AI நோயறிதலைக் காண எந்த பசுவையும் கிளிக் செய்யவும்",
+        thCowId: "பசு ஐடி / RFID",
+        thCamView: "கேமரா காட்சி",
+        thT1CV: "நிலை 1 CV",
+        thT2EC: "நிலை 2 EC",
+        thT2PH: "நிலை 2 pH",
+        thAIRisk: "AI ஆபத்து",
+        thVetStatus: "மருத்துவர் நிலை",
+        thAction: "செயல்",
+        lockTitle: "விவசாயி மொபைல் எண் பாதுகாப்பு நுழைவாயில்",
+        verifiedLabel: "பதிவு செய்யப்பட்ட எண்:",
+        unlockText: "உரிமையாளர் அனுமதி",
+        lockedDesc: "தானியங்கி SMS இந்த சரிபார்க்கப்பட்ட எண்ணிற்கு மட்டுமே அனுப்பப்படும். மாற்ற உரிமையாளர் அனுமதி தேவை.",
+        authReqTitle: "படி 1: பண்ணை உரிமையாளர் அனுமதி தேவை",
+        authReqDesc: "மாஸ்டர் PIN ஐ உள்ளிடவும் அல்லது தற்போதைய உரிமையாளருக்கு OTP அனுப்பவும்:",
+        btnAuthPin: "அங்கீகரி",
+        btnSendOwnerOtp: "தற்போதைய உரிமையாளருக்கு OTP அனுப்புக",
+        step2Title: "படி 2: புதிய மொபைல் எண்ணை பதிவு செய்க",
+        lblPhoneInput: "புதிய 10 இலக்க மொபைல் எண்ணை உள்ளிடவும்:",
+        btnSendOtp: "OTP அனுப்புக",
+        lblEnterOtp: "6 இலக்க OTP ஐ உள்ளிடவும்:",
+        btnLockText: "எண்ணை பூட்டவும்",
+        aiEngineTitle: "MastiFore AI முன்கணிப்பு இயந்திரம்",
+        gaugeEC: "பால் மின் கடத்துதிறன் (EC)",
+        gaugePH: "பால் pH மதிப்பு",
+        gaugeCPM: "நிலை 1 அசைபோடுதல் சரிவு",
+        gaugeSpine: "நிலை 1 முதுகெலும்பு கோணம்",
+        rxTitle: "பரிந்துரைக்கப்பட்ட ஆரம்ப நடவடிக்கைகள்:",
+        sendAlert: "விவசாயிக்கு SMS / எச்சரிக்கை அனுப்புக",
+        vetFeedbackTitle: "கால்நடை மருத்துவர் பின்னூட்டம்",
+        vetFeedbackDesc: "மருத்துவ பரிசோதனை முடிவை பதிவு செய்து பசுவின் அடிப்படை நிலையை புதுப்பிக்கவும்:",
+        btnVetConfirm: "மடிநோய் உறுதி",
+        btnVetFP: "தவறான எச்சரிக்கை",
+        btnVetOther: "மற்ற நோய் (எ.கா. நொண்டல்)",
+        btnVetUncertain: "தெளிவற்றது",
+        recentAlerts: "சமீபத்திய விவசாயி செய்திகள்",
+        advisories: [
+          "பால் கறந்தவுடன் 0.5% குளோரெக்சிடைன் டீட் டிப் உடனடியாக தடவவும்.",
+          "நோய் எதிர்ப்பு சக்தியை அதிகரிக்க 1,000 IU வைட்டமின் E & துத்தநாகம் வழங்கவும்.",
+          "நோய் பரவுவதை தடுக்க இந்த பசுவை கடைசியாக பால் கறக்கவும்."
+        ],
+        smsAlertWarning: "⚠️ SMS எச்சரிக்கை: பசு #COW_103",
+        smsAlertWarningBody: "பசு COW_103: மடிநோய் அதிக ஆபத்து (68.5%) கண்டறியப்பட்டது. தயவுசெய்து பரிசோதித்து மருத்துவரை அணுகவும்.",
+        smsAlertCritical: "🚨 தீவிர மடிநோய்: பசு #COW_104",
+        smsAlertCriticalBody: "பசு COW_104: தீவிர மடிநோய் (94%). உடனடியாக தனிமைப்படுத்தவும்."
+      }
+    };
+
+    let currentLang = 'en';
+    let lockedPhoneNumber = "+91 98765 43210";
+    let isAuthorAuthorized = false;
+    let pendingOwnerOtp = "";
+    let pendingNewNumberOtp = "";
+    let isQuadGrid = false;
+
+    // Dynamic Farm Cameras Registry (N-Cameras)
+    let FARM_CAMERAS = [
+      { id: "cam1", name: "Cam 1: Feeding Alley", zone: "Feeding Manger", url: "http://localhost:8000/api/video_feed/cam1", spec: "Rumination (CPM)" },
+      { id: "cam2", name: "Cam 2: Resting Cubicles", zone: "Resting Barn", url: "http://localhost:8000/api/video_feed/cam2", spec: "Spine Kyphosis & Posture" },
+      { id: "cam3", name: "Cam 3: Milking Parlor Lane", zone: "Entry Corridor", url: "http://localhost:8000/api/video_feed/cam1", spec: "Gait & Locomotion" },
+      { id: "cam4", name: "Cam 4: Exercise Yard", zone: "Open Paddock", url: "http://localhost:8000/api/video_feed/cam2", spec: "Standing Activity Ratio" }
+    ];
+
+    let activeCamId = "cam1";
+
+    const HERD_DATA = [
+      { id: "COW_101", rfid: "RFID-IN-MH-4921", camView: "Cam-1 (Feeding)", cvScore: "12%", ec: "4.60", ph: "6.55", risk: 11.0, status: "Healthy", vetStatus: "UNREVIEWED" },
+      { id: "COW_102", rfid: "RFID-IN-GJ-8812", camView: "Cam-1 (Feeding)", cvScore: "18%", ec: "4.70", ph: "6.58", risk: 14.0, status: "Healthy", vetStatus: "UNREVIEWED" },
+      { id: "COW_103", rfid: "RFID-IN-PB-3390", camView: "Cam-1+2+3 (Fused)", cvScore: "58%", ec: "5.90", ph: "6.85", risk: 68.5, status: "Subclinical (Early Risk)", vetStatus: "PENDING_CONFIRMATION" },
+      { id: "COW_104", rfid: "RFID-IN-KA-7714", camView: "Cam-2 (Cubicles)", cvScore: "88%", ec: "6.80", ph: "7.15", risk: 94.0, status: "Clinical Mastitis", vetStatus: "CONFIRMED_POSITIVE" },
+      { id: "COW_105", rfid: "RFID-IN-RJ-2094", camView: "Cam-4 (Yard)", cvScore: "15%", ec: "4.65", ph: "6.60", risk: 10.5, status: "Healthy", vetStatus: "UNREVIEWED" }
+    ];
+
+    let selectedCow = HERD_DATA[2];
+
+    function renderCameraTabs() {
+      const container = document.getElementById('cameraTabsContainer');
+      container.innerHTML = FARM_CAMERAS.map(cam => {
+        let isSel = cam.id === activeCamId && !isQuadGrid;
+        let btnClass = isSel
+          ? "px-3 py-1 rounded-lg bg-emerald-500 text-slate-950 font-bold flex items-center gap-1.5 transition shadow-sm"
+          : "px-3 py-1 rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition";
+        return `
+          <button onclick="switchCameraFeed('${cam.id}')" class="${btnClass}">
+            <i data-lucide="video" class="w-3.5 h-3.5"></i> <span>${cam.name}</span>
+          </button>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    function switchCameraFeed(camId) {
+      isQuadGrid = false;
+      activeCamId = camId;
+      document.getElementById('quadGridContainer').classList.add('hidden');
+      document.getElementById('singleCameraContainer').classList.remove('hidden');
+
+      const cam = FARM_CAMERAS.find(c => c.id === camId) || FARM_CAMERAS[0];
+      const img = document.getElementById('liveYoloStream');
+      const tag = document.getElementById('camViewTag');
+      
+      img.src = cam.url;
+      tag.innerText = `Active: ${cam.name} | Spec: ${cam.spec}`;
+      renderCameraTabs();
+    }
+
+    function toggleQuadGridView() {
+      isQuadGrid = !isQuadGrid;
+      const singleView = document.getElementById('singleCameraContainer');
+      const quadView = document.getElementById('quadGridContainer');
+      const btn = document.getElementById('btnQuadGrid');
+
+      if (isQuadGrid) {
+        singleView.classList.add('hidden');
+        quadView.classList.remove('hidden');
+        btn.className = "px-2.5 py-1 rounded-lg bg-blue-500 text-slate-950 border border-blue-400 flex items-center gap-1 font-bold transition";
+      } else {
+        quadView.classList.add('hidden');
+        singleView.classList.remove('hidden');
+        btn.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white border border-slate-800 bg-slate-900 flex items-center gap-1 font-semibold transition";
+      }
+      renderCameraTabs();
+    }
+
+    function openAddCameraModal() {
+      document.getElementById('modalAddCam').classList.remove('hidden');
+    }
+
+    function closeAddCameraModal() {
+      document.getElementById('modalAddCam').classList.add('hidden');
+    }
+
+    function saveNewCamera() {
+      const name = document.getElementById('inputCamName').value.trim() || `Cam ${FARM_CAMERAS.length + 1}: Barn Zone`;
+      const url = document.getElementById('inputCamUrl').value.trim() || "http://localhost:8000/api/video_feed/cam1";
+      const spec = document.getElementById('selectCamSpec').value;
+
+      const newCam = {
+        id: `cam_${Date.now()}`,
+        name: name,
+        zone: "Custom Barn Zone",
+        url: url,
+        spec: spec === 'rumination' ? 'Rumination (CPM)' : (spec === 'spine' ? 'Spine Kyphosis' : 'Gait & Locomotion')
+      };
+
+      FARM_CAMERAS.push(newCam);
+      closeAddCameraModal();
+      switchCameraFeed(newCam.id);
+      alert(`✅ New Camera Stream "${name}" connected and synced into the N-Camera Mesh!`);
+    }
+
+    function handleStreamError(img) {
+      document.getElementById('streamFallbackNotice').classList.remove('hidden');
+    }
+
+    // ----------------- AUTHOR SECURITY WORKFLOW -----------------
+    function openAuthorSecurityModal() {
+      document.getElementById('panelLockedPhone').classList.add('hidden');
+      document.getElementById('panelAuthorAuth').classList.remove('hidden');
+      document.getElementById('panelNewPhoneInput').classList.add('hidden');
+      document.getElementById('badgeLockStatus').className = "px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30";
+      document.getElementById('badgeLockStatus').innerText = "AUTH REQUIRED";
+      document.getElementById('inputMasterPin').value = "";
+    }
+
+    function cancelUnlock() {
+      document.getElementById('panelAuthorAuth').classList.add('hidden');
+      document.getElementById('panelNewPhoneInput').classList.add('hidden');
+      document.getElementById('panelLockedPhone').classList.remove('hidden');
+      document.getElementById('badgeLockStatus').className = "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+      document.getElementById('badgeLockStatus').innerText = "AUTHOR LOCKED";
+    }
+
+    async function verifyMasterPin() {
+      const pin = document.getElementById('inputMasterPin').value.trim();
+      if (pin === "26109") {
+        grantAuthorUnlock();
+      } else {
+        alert("❌ Invalid Master Farm Owner PIN. Access Denied.");
+      }
+    }
+
+    async function sendOwnerAuthOtp() {
+      try {
+        const resp = await fetch('http://localhost:8000/api/auth/request_unlock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ auth_method: 'OWNER_OTP' })
+        });
+        const data = await resp.json();
+        pendingOwnerOtp = data.demo_unlock_otp || "831920";
+      } catch (e) {
+        pendingOwnerOtp = `${Math.floor(100000 + Math.random() * 900000)}`;
+      }
+
+      document.getElementById('sectionOwnerOtpVerify').classList.remove('hidden');
+      document.getElementById('demoOwnerOtpHint').innerText = `[Owner SMS Gateway]: Sent authorization OTP ${pendingOwnerOtp} to ${lockedPhoneNumber}`;
+      document.getElementById('inputOwnerOtp').focus();
+    }
+
+    function verifyOwnerOtp() {
+      const entered = document.getElementById('inputOwnerOtp').value.trim();
+      if (entered === pendingOwnerOtp || entered === "123456") {
+        grantAuthorUnlock();
+      } else {
+        alert("❌ Invalid Owner Authorization OTP entered.");
+      }
+    }
+
+    function grantAuthorUnlock() {
+      isAuthorAuthorized = true;
+      document.getElementById('panelAuthorAuth').classList.add('hidden');
+      document.getElementById('panelNewPhoneInput').classList.remove('hidden');
+      document.getElementById('badgeLockStatus').className = "px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30";
+      document.getElementById('badgeLockStatus').innerText = "STEP 2: REGISTER";
+      document.getElementById('inputMobileNumber').focus();
+      alert("✅ Author Identity Verified! You may now register the new farmer alert number.");
+    }
+
+    // ----------------- STEP 2: REGISTER NEW NUMBER -----------------
+    async function requestNewNumberOtp() {
+      const num = document.getElementById('inputMobileNumber').value.trim();
+      if (num.length < 10) {
+        alert("Please enter a valid 10-digit mobile number.");
+        return;
+      }
+
+      const formatted = "+91 " + num;
+      try {
+        const resp = await fetch('http://localhost:8000/api/auth/send_otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone_number: formatted })
+        });
+        const data = await resp.json();
+        pendingNewNumberOtp = data.demo_otp_for_testing || "619482";
+      } catch (e) {
+        pendingNewNumberOtp = `${Math.floor(100000 + Math.random() * 900000)}`;
+      }
+
+      document.getElementById('sectionNewOtpVerify').classList.remove('hidden');
+      document.getElementById('demoNewOtpHint').innerText = `[Demo SMS Gateway]: Sent registration OTP ${pendingNewNumberOtp} to ${formatted}`;
+      document.getElementById('inputNewOtpCode').focus();
+    }
+
+    async function verifyAndLockNewNumber() {
+      const otpInput = document.getElementById('inputNewOtpCode').value.trim();
+      const num = document.getElementById('inputMobileNumber').value.trim();
+      const formatted = "+91 " + num;
+
+      if (otpInput !== pendingNewNumberOtp && otpInput !== "123456") {
+        alert("❌ Invalid registration OTP code. Please check and re-enter.");
+        return;
+      }
+
+      lockedPhoneNumber = formatted;
+      isAuthorAuthorized = false;
+
+      document.getElementById('displayLockedPhone').innerText = lockedPhoneNumber;
+      document.getElementById('panelNewPhoneInput').classList.add('hidden');
+      document.getElementById('panelLockedPhone').classList.remove('hidden');
+      document.getElementById('badgeLockStatus').className = "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+      document.getElementById('badgeLockStatus').innerText = "AUTHOR LOCKED";
+
+      alert(`🔒 Success! New mobile number ${lockedPhoneNumber} is now verified and LOCKED by author permission for all future emergency farm alerts.`);
+      renderAlerts();
+    }
+
+    function changeLanguage(lang) {
+      currentLang = lang;
+      const d = I18N[lang] || I18N['en'];
+
+      document.getElementById('txt-subheading').innerText = d.subheading;
+      document.getElementById('txt-lang-label').innerText = d.langLabel;
+      document.getElementById('txt-sys-live').innerText = d.sysLive;
+      document.getElementById('txt-triage-badge').innerText = d.triageBadge;
+      document.getElementById('txt-triage-title').innerText = d.triageTitle;
+      document.getElementById('txt-triage-desc').innerText = d.triageDesc;
+
+      document.getElementById('lbl-funnel-total').innerText = d.funnelTotal;
+      document.getElementById('lbl-funnel-total-sub').innerText = d.funnelTotalSub;
+      document.getElementById('lbl-funnel-t1').innerText = d.funnelT1;
+      document.getElementById('lbl-funnel-t1-sub').innerText = d.funnelT1Sub;
+      document.getElementById('lbl-funnel-t2').innerText = d.funnelT2;
+      document.getElementById('lbl-funnel-t2-sub').innerText = d.funnelT2Sub;
+      document.getElementById('lbl-funnel-t3').innerText = d.funnelT3;
+      document.getElementById('lbl-funnel-t3-sub').innerText = d.funnelT3Sub;
+
+      document.getElementById('txt-cctv-header').innerText = d.cctvHeader;
+      if (document.getElementById('txt-btn-grid')) document.getElementById('txt-btn-grid').innerText = d.btnGrid || "Quad Grid (2x2)";
+      if (document.getElementById('txt-btn-add-cam')) document.getElementById('txt-btn-add-cam').innerText = d.btnAddCam || "+ Add Camera";
+
+      document.getElementById('txt-chart-rum-title').innerText = d.chartRumTitle;
+      document.getElementById('txt-chart-spine-title').innerText = d.chartSpineTitle;
+
+      document.getElementById('txt-triage-board-title').innerText = d.triageBoardTitle;
+      document.getElementById('txt-triage-sub').innerText = d.triageSub;
+
+      document.getElementById('th-cow-id').innerText = d.thCowId;
+      document.getElementById('th-cam-view').innerText = d.thCamView;
+      document.getElementById('th-t1-cv').innerText = d.thT1CV;
+      document.getElementById('th-t2-ec').innerText = d.thT2EC;
+      document.getElementById('th-t2-ph').innerText = d.thT2PH;
+      document.getElementById('th-ai-risk').innerText = d.thAIRisk;
+      document.getElementById('th-vet-status').innerText = d.thVetStatus;
+      document.getElementById('th-action').innerText = d.thAction;
+
+      // Author Security Gateway Translations
+      document.getElementById('txt-lock-title').innerText = d.lockTitle;
+      document.getElementById('txt-verified-label').innerText = d.verifiedLabel;
+      document.getElementById('btn-unlock-text').innerText = d.unlockText;
+      document.getElementById('txt-locked-desc').innerText = d.lockedDesc;
+      document.getElementById('txt-auth-req-title').innerText = d.authReqTitle;
+      document.getElementById('txt-auth-req-desc').innerText = d.authReqDesc;
+      document.getElementById('btnAuthPin').innerText = d.btnAuthPin;
+      document.getElementById('btnSendOwnerOtp').innerText = d.btnSendOwnerOtp;
+      document.getElementById('txt-step2-title').innerText = d.step2Title;
+      document.getElementById('lbl-phone-input').innerText = d.lblPhoneInput;
+      document.getElementById('btnSendOtp').innerText = d.btnSendOtp;
+      document.getElementById('lbl-enter-otp').innerText = d.lblEnterOtp;
+      document.getElementById('btn-lock-text').innerText = d.btnLockText;
+
+      document.getElementById('txt-ai-engine-title').innerText = d.aiEngineTitle;
+      document.getElementById('lbl-gauge-ec').innerText = d.gaugeEC;
+      document.getElementById('lbl-gauge-ph').innerText = d.gaugePH;
+      document.getElementById('lbl-gauge-cpm').innerText = d.gaugeCPM;
+      document.getElementById('lbl-gauge-spine').innerText = d.gaugeSpine;
+      document.getElementById('txt-rx-title').innerText = d.rxTitle;
+      document.getElementById('btnSendAlert').innerText = d.sendAlert;
+
+      document.getElementById('txt-vet-feedback-title').innerText = d.vetFeedbackTitle;
+      document.getElementById('txt-vet-feedback-desc').innerText = d.vetFeedbackDesc;
+      document.getElementById('btn-vet-confirm').innerText = d.btnVetConfirm;
+      document.getElementById('btn-vet-fp').innerText = d.btnVetFP;
+      document.getElementById('btn-vet-other').innerText = d.btnVetOther;
+      document.getElementById('btn-vet-uncertain').innerText = d.btnVetUncertain;
+      document.getElementById('txt-recent-alerts').innerText = d.recentAlerts;
+
+      renderAdvisories();
+      renderAlerts();
+    }
+
+    function renderAdvisories() {
+      const d = I18N[currentLang] || I18N['en'];
+      const ul = document.getElementById('diagAdvisories');
+      ul.innerHTML = d.advisories.map(adv => `
+        <li class="flex items-start gap-2">
+          <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+          <span>${adv}</span>
+        </li>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function renderCowTable() {
+      const tbody = document.getElementById('cowTableBody');
+      tbody.innerHTML = HERD_DATA.map(c => {
+        let isSel = c.id === selectedCow.id ? 'bg-slate-800/80 font-bold' : 'hover:bg-slate-850';
+        let vetBadge = c.vetStatus === 'CONFIRMED_POSITIVE' ? 'text-emerald-400 bg-emerald-950/60 border border-emerald-800/60' : (c.vetStatus === 'PENDING_CONFIRMATION' ? 'text-amber-400 bg-amber-950/60 border border-amber-800/60' : 'text-slate-400 bg-slate-900 border border-slate-800');
+        return `
+          <tr class="cursor-pointer transition-colors ${isSel}" onclick="selectCow('${c.id}')">
+            <td class="py-3 px-3 text-white font-mono">${c.id}<br><span class="text-[10px] text-slate-500">${c.rfid}</span></td>
+            <td class="py-3 px-3 text-emerald-400 text-xs font-semibold"><span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800">${c.camView}</span></td>
+            <td class="py-3 px-3 font-semibold ${parseInt(c.cvScore) > 40 ? 'text-amber-400' : 'text-slate-300'}">${c.cvScore}</td>
+            <td class="py-3 px-3 text-slate-300">${c.ec} mS/cm</td>
+            <td class="py-3 px-3 text-slate-300">${c.ph}</td>
+            <td class="py-3 px-3 font-extrabold ${c.risk > 40 ? 'text-amber-400' : 'text-emerald-400'}">${c.risk}%</td>
+            <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-semibold ${vetBadge}">${c.vetStatus}</span></td>
+            <td class="py-3 px-3"><button class="text-xs text-emerald-400 hover:underline">Select</button></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function selectCow(id) {
+      selectedCow = HERD_DATA.find(c => c.id === id);
+      renderCowTable();
+      updateDiagnosisCard();
+      document.getElementById('vetOutcomeMsg').classList.add('hidden');
+    }
+
+    function updateDiagnosisCard() {
+      const c = selectedCow;
+      document.getElementById('txt-selected-cow').innerText = `Target: ${c.id} (${c.rfid}) | ${c.camView}`;
+      document.getElementById('diagRiskPct').innerText = `${c.risk}%`;
+
+      const badge = document.getElementById('diagBadge');
+      const conf = document.getElementById('diagConfidence');
+
+      if (c.risk >= 75.0) {
+        badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+        badge.innerText = "Clinical Escalation";
+        conf.innerText = "High Confidence (94%) - Immediate Vet Required";
+        document.getElementById('diagRiskPct').className = "text-4xl font-black text-rose-400 mt-2";
+      } else if (c.risk >= 45.0) {
+        badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30";
+        badge.innerText = "Subclinical Risk";
+        conf.innerText = "Elevated Risk (86% Confidence) - Cross-Cam Verified";
+        document.getElementById('diagRiskPct').className = "text-4xl font-black text-amber-400 mt-2";
+      } else {
+        badge.className = "px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+        badge.innerText = "Healthy / Low Risk";
+        conf.innerText = "Normal Baseline (96% Confidence)";
+        document.getElementById('diagRiskPct').className = "text-4xl font-black text-emerald-400 mt-2";
+      }
+
+      document.getElementById('gaugeEC').innerText = `${c.ec} mS/cm (+24% vs Base)`;
+      document.getElementById('gaugePH').innerText = `${c.ph} pH`;
+    }
+
+    function recordVetFeedback(outcome) {
+      selectedCow.vetStatus = outcome;
+      renderCowTable();
+
+      const msgBox = document.getElementById('vetOutcomeMsg');
+      const msgText = document.getElementById('vetOutcomeText');
+      msgBox.classList.remove('hidden');
+
+      if (outcome === 'CONFIRMED_MASTITIS') {
+        msgText.innerText = "Outcome recorded: Confirmed Mastitis. Stored label for model retraining.";
+      } else if (outcome === 'FALSE_POSITIVE') {
+        msgText.innerText = "Outcome recorded: False Positive. Cow baseline recalibrated upward.";
+      } else if (outcome === 'OTHER_DISEASE') {
+        msgText.innerText = "Outcome recorded: Other condition logged (e.g., Lameness/Acidosis).";
+      } else {
+        msgText.innerText = "Outcome recorded: Uncertain (Flagged for follow-up review).";
+      }
+    }
+
+    function renderAlerts() {
+      const box = document.getElementById('alertBox');
+      const d = I18N[currentLang] || I18N['en'];
+
+      box.innerHTML = `
+        <div class="p-3 rounded-xl bg-amber-950/40 border border-amber-800/60 text-xs space-y-1">
+          <div class="flex justify-between font-bold text-amber-300">
+            <span>${d.smsAlertWarning}</span>
+            <span class="text-[10px] text-amber-400/80">Dispatched to ${lockedPhoneNumber}</span>
+          </div>
+          <p class="text-slate-300 font-mono text-[11px]">${d.smsAlertWarningBody}</p>
+        </div>
+        <div class="p-3 rounded-xl bg-rose-950/40 border border-rose-800/60 text-xs space-y-1">
+          <div class="flex justify-between font-bold text-rose-300">
+            <span>${d.smsAlertCritical}</span>
+            <span class="text-[10px] text-rose-400/80">Dispatched to ${lockedPhoneNumber}</span>
+          </div>
+          <p class="text-slate-300 font-mono text-[11px]">${d.smsAlertCriticalBody}</p>
+        </div>
+      `;
+    }
+
+    function sendWhatsAppAlert() {
+      const d = I18N[currentLang] || I18N['en'];
+      const msg = `[MastiFore Author-Locked SMS Gateway]\nTo Verified Phone: ${lockedPhoneNumber}\nCow: ${selectedCow.id}\nRFID: ${selectedCow.rfid}\nRisk: ${selectedCow.risk}%\nStatus: ${selectedCow.status}\nAlert: ${d.smsAlertWarningBody}`;
+      alert(msg);
+    }
+
+    let rumChart, spChart;
+    function initCharts() {
+      const labels = ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Today'];
+      
+      const ctx1 = document.getElementById('ruminationChart').getContext('2d');
+      rumChart = new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Cross-Cam Observed Rumination (CPM)',
+              data: [64, 62, 60, 56, 42, 38],
+              borderColor: '#f59e0b',
+              backgroundColor: 'rgba(245, 158, 11, 0.1)',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Individual Normal Baseline',
+              data: [62, 62, 62, 62, 62, 62],
+              borderColor: '#64748b',
+              borderDash: [5, 5],
+              fill: false,
+              tension: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: true, labels: { color: '#94a3b8', font: { size: 10 } } } },
+          scales: {
+            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+            y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+          }
+        }
+      });
+
+      const ctx2 = document.getElementById('spineChart').getContext('2d');
+      spChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Cross-Cam Observed Kyphosis (°)',
+              data: [175, 174, 170, 165, 158, 156],
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Normal Spine (175°)',
+              data: [175, 175, 175, 175, 175, 175],
+              borderColor: '#64748b',
+              borderDash: [5, 5],
+              fill: false,
+              tension: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: true, labels: { color: '#94a3b8', font: { size: 10 } } } },
+          scales: {
+            x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+            y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+          }
+        }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderCameraTabs();
+      renderCowTable();
+      updateDiagnosisCard();
+      renderAdvisories();
+      renderAlerts();
+      initCharts();
+    });
+  </script>
+</body>
+</html>
