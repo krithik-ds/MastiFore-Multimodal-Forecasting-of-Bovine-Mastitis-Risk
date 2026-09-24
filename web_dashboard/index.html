@@ -3601,6 +3601,7 @@
 
     let webcamStream = null;
     let webcamAnimFrame = null;
+    let lastChartSyncTime = 0;
 
     async function startBrowserWebcam() {
       stopAllStreams();
@@ -3632,28 +3633,51 @@
         if (fpsTag) fpsTag.innerText = '30.0 FPS';
         if (detTag) detTag.innerText = '1 Animal Active';
 
-        if (!HERD_DATA.some(c => c.id === 'COW_003')) {
-          HERD_DATA.unshift({
-            id: 'COW_003',
-            rfid: 'RFID-9903',
-            breed: 'Gir Cross',
-            lactation: 'Day 45',
-            hasEspData: false,
-            milkYield: '--',
-            ec: '--',
-            ph: '--',
-            cpm: '48.5',
-            spine: '178.4°',
-            risk: 8.5,
-            status: 'Healthy',
-            vetStatus: 'UNREVIEWED',
-            quarterLabel: 'Pending ESP32 Test',
-            temperature: '--',
-            deviceId: 'LIVE_DEVICE_CAM'
-          });
-          renderHerdTable();
-          initHerdConstellation();
+        // Register camera
+        FARM_CAMERAS = [{
+          id: 'cam_webcam',
+          name: 'Device Webcam 01',
+          zone: 'Milking & Resting Cubicle',
+          url: '#webcam',
+          spec: 'Optical Flow Rumination & Pose'
+        }];
+        activeCamId = 'cam_webcam';
+
+        // Register/Select COW_003
+        const liveCow = {
+          id: 'COW_003',
+          rfid: 'RFID-9903',
+          breed: 'Gir Cross (Live)',
+          lactation: 'Day 45',
+          hasEspData: false,
+          milkYield: '--',
+          ec: '--',
+          ph: '--',
+          cpm: '48.5',
+          spine: '178.4°',
+          risk: 8.5,
+          status: 'Healthy',
+          vetStatus: 'UNREVIEWED',
+          quarterLabel: 'Pending ESP32 Test',
+          temperature: '--',
+          deviceId: 'DEVICE_WEBCAM_01'
+        };
+
+        const existingIdx = HERD_DATA.findIndex(c => c.id === 'COW_003');
+        if (existingIdx >= 0) {
+          HERD_DATA[existingIdx] = { ...HERD_DATA[existingIdx], ...liveCow };
+        } else {
+          HERD_DATA.unshift(liveCow);
         }
+
+        selectedCow = HERD_DATA.find(c => c.id === 'COW_003');
+
+        renderMonitoringCameras();
+        renderHerdTable();
+        initHerdConstellation();
+        renderTrajectory();
+        updateMonitoringCharts();
+        updateFingerprintChart();
 
         renderWebcamHudLoop();
       } catch (err) {
@@ -3726,6 +3750,17 @@
         ctx.font = '11px monospace';
         ctx.fillText(`CPM: ${cpm} | Spine: ${spineAngle}° | Risk: 8.5% (Optimal)`, boxX + 8, boxY + boxH + 17);
 
+        // Periodically sync live data to charts and trajectory
+        if (now - lastChartSyncTime > 400) {
+          lastChartSyncTime = now;
+          if (selectedCow && selectedCow.id === 'COW_003') {
+            selectedCow.cpm = cpm;
+            selectedCow.spine = `${spineAngle}°`;
+            updateMonitoringCharts();
+            renderTrajectory();
+          }
+        }
+
         webcamAnimFrame = requestAnimationFrame(draw);
       }
       draw();
@@ -3757,7 +3792,42 @@
       if (fpsTag) fpsTag.innerText = '29.8 FPS';
       if (detTag) detTag.innerText = '4 Animals Tracked';
 
+      FARM_CAMERAS = [{
+        id: 'cam_demo',
+        name: 'Barn CCTV 01',
+        zone: 'Feeding Alley',
+        url: 'https://images.unsplash.com/photo-1546445317-29f4545e9d53?auto=format&fit=crop&w=1200&q=80',
+        spec: 'Vision Triage AI'
+      }];
+      activeCamId = 'cam_demo';
+
+      if (!HERD_DATA.some(c => c.id === 'COW_003')) {
+        HERD_DATA.unshift({
+          id: 'COW_003',
+          rfid: 'RFID-9903',
+          breed: 'Gir Cross',
+          lactation: 'Day 45',
+          hasEspData: false,
+          milkYield: '--',
+          ec: '--',
+          ph: '--',
+          cpm: '48.5',
+          spine: '178.4°',
+          risk: 8.5,
+          status: 'Healthy',
+          vetStatus: 'UNREVIEWED',
+          quarterLabel: 'Pending ESP32 Test',
+          temperature: '--',
+          deviceId: 'BARN_CCTV_01'
+        });
+      }
+
+      selectedCow = HERD_DATA.find(c => c.id === 'COW_003');
+
+      renderMonitoringCameras();
       renderTrajectory();
+      updateMonitoringCharts();
+      updateFingerprintChart();
     }
 
     function stopAllStreams() {
