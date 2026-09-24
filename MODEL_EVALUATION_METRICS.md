@@ -1,7 +1,5 @@
 # MastiFore System Performance & Benchmark Metrics Report
-**Project:** SIH 26109 | MastiFore: AI-Based Early Forecasting of Bovine Mastitis  
 **Team:** Oishi Manji  
-**Date of Evaluation:** September 10, 2026  
 **Environment:** macOS / Edge Python 3.12 Engine  
 
 ---
