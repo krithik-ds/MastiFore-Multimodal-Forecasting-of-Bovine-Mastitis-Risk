@@ -1,9 +1,6 @@
-# SIH 26109: AI-Based Early Forecasting of Bovine Mastitis in Indian Dairy Farms
+AI-Based Early Forecasting of Bovine Mastitis in Indian Dairy Farms
 
 **Theme:** Agriculture, FoodTech & Rural Development  
-**Sponsoring Ministry:** Ministry of Fisheries, Animal Husbandry & Dairying  
-**Edition:** Hardware / IoT + AI/ML Software Edition  
-
 ---
 
 ## 🚀 3-Tier Funnel Architecture
