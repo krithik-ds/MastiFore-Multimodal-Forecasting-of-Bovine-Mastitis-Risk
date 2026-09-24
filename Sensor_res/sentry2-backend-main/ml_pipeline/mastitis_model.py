@@ -1,6 +1,5 @@
 """
 Tier-3 Multi-Parameter AI Predictive Model for Bovine Mastitis Forecasting
-SIH Problem Statement 26109
 
 Correlates all 7 required data vectors:
 1. Animal History: Breed, Age, Lactation #, Parity, Disease History, Vaccination Status
