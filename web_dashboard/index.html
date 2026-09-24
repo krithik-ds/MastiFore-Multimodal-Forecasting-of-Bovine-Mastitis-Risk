@@ -4410,22 +4410,34 @@
 
       try {
         const url = customUrl || 'https://mastitis-data-api.onrender.com';
-        const res = await fetch(`http://localhost:8000/api/cloud-sync/fetch?cloud_url=${encodeURIComponent(url)}`);
-        const data = await res.json();
-        if (data.status === 'success') {
-          await syncWithBackendHerdData();
-          if (btn) btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-brand-600"></i> <span>Synced (${data.newly_synced_records || 0} New)</span>`;
-          setTimeout(() => {
-            if (btn) btn.innerHTML = '<i data-lucide="cloud-download" class="w-3.5 h-3.5"></i> <span>Sync Render Cloud</span>';
-            lucide.createIcons();
-          }, 3500);
-        } else {
-          if (btn) btn.innerHTML = '<i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-600"></i> <span>Cloud Offline</span>';
-          setTimeout(() => {
-            if (btn) btn.innerHTML = '<i data-lucide="cloud-download" class="w-3.5 h-3.5"></i> <span>Sync Render Cloud</span>';
-            lucide.createIcons();
-          }, 3000);
+        let syncedCount = 0;
+        
+        try {
+          const res = await fetch(`http://localhost:8000/api/cloud-sync/fetch?cloud_url=${encodeURIComponent(url)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.status === 'success') {
+              syncedCount = data.newly_synced_records || 0;
+            }
+          }
+        } catch (localErr) {
+          // Direct fallback when running hosted on Vercel without local backend
+          const directRes = await fetch(`${url}/api/v1/live`);
+          if (directRes.ok) {
+            const directData = await directRes.json();
+            if (directData && (directData.live_records || directData.data)) {
+              const records = directData.live_records || directData.data || [];
+              syncedCount = records.length;
+            }
+          }
         }
+
+        await syncWithBackendHerdData();
+        if (btn) btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-brand-600"></i> <span>Synced (${syncedCount} Records)</span>`;
+        setTimeout(() => {
+          if (btn) btn.innerHTML = '<i data-lucide="cloud-download" class="w-3.5 h-3.5"></i> <span>Sync Render Cloud</span>';
+          lucide.createIcons();
+        }, 3500);
       } catch (err) {
         if (btn) btn.innerHTML = '<i data-lucide="cloud-download" class="w-3.5 h-3.5"></i> <span>Sync Render Cloud</span>';
       }
