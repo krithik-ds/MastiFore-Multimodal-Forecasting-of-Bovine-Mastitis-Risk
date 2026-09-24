@@ -1,14 +1,5 @@
 {
-  "version": 2,
-  "cleanUrls": true,
-  "routes": [
-    {
-      "src": "/web_dashboard/(.*)",
-      "dest": "/web_dashboard/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/web_dashboard/index.html"
-    }
-  ]
+  "framework": null,
+  "outputDirectory": "web_dashboard",
+  "cleanUrls": true
 }
