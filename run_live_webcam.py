@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 MastiFore Live Fullscreen Computer Vision Runner
-SIH 26109: Bovine Mastitis Early Forecasting System
 
 Features:
 - YOLOv8 + ByteTrack ID persistence
