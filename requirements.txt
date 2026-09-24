@@ -1,4 +1,3 @@
-# SIH 26109: Bovine Mastitis Early Forecasting System Dependencies
 ultralytics>=8.1.0
 opencv-python>=4.8.0
 fastapi>=0.110.0
