@@ -1,0 +1,53 @@
+{
+  "model_type": "Logistic Regression Sensor Classifier",
+  "features": [
+    "Milk_Temperature",
+    "Milk_pH",
+    "Milk_Conductivity",
+    "Milk_Yield",
+    "Clotting"
+  ],
+  "means": [
+    36.064,
+    6.7461,
+    5.1354,
+    17.9654,
+    0.1674
+  ],
+  "stds": [
+    1.1525,
+    0.2123,
+    0.9398,
+    5.2946,
+    0.3737
+  ],
+  "standardized_weights": [
+    0.994,
+    0.9345,
+    1.1165,
+    -0.818,
+    1.0317
+  ],
+  "bias": -2.4146,
+  "feature_importances": {
+    "Milk_Temperature": 20.31,
+    "Milk_pH": 19.09,
+    "Milk_Conductivity": 22.81,
+    "Milk_Yield": 16.71,
+    "Clotting": 21.08
+  },
+  "metrics": {
+    "accuracy": 100.0,
+    "precision": 100.0,
+    "recall": 100.0,
+    "specificity": 100.0,
+    "f1_score": 100.0,
+    "roc_auc": 100.0,
+    "confusion_matrix": {
+      "tp": 34,
+      "tn": 127,
+      "fp": 0,
+      "fn": 0
+    }
+  }
+}

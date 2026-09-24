@@ -1,0 +1,6 @@
+cow_id,breed_idx,age_years,lactation_num,vaccination_status,prior_mastitis_hist,hygiene_score,spine_angle
+COW_001,1,5,3,1,0,8,172
+COW_002,2,6,4,1,1,6,165
+COW_003,1,4,2,1,0,9,174
+COW_004,3,7,5,1,0,7,168
+COW_005,2,5,3,1,1,6,163

@@ -1,0 +1,204 @@
+{
+  "baseline_all_features": {
+    "accuracy": 100.0,
+    "sensitivity": 100.0,
+    "precision": 100.0,
+    "f1": 100.0,
+    "roc_auc": 100.0
+  },
+  "lofo": {
+    "without_Milk_Temperature": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "without_Milk_pH": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "without_Milk_Conductivity": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "without_Somatic_Cell_Count": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "without_Milk_Yield": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "without_Clotting": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    }
+  },
+  "hardware_5_sensors": {
+    "accuracy": 100.0,
+    "sensitivity": 100.0,
+    "precision": 100.0,
+    "f1": 100.0,
+    "roc_auc": 100.0
+  },
+  "pairs": {
+    "Temp+pH": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+EC": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+Yield": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+Clotting": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+EC": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+Yield": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+Clotting": {
+      "accuracy": 99.38,
+      "sensitivity": 97.06,
+      "precision": 100.0,
+      "f1": 98.51,
+      "roc_auc": 99.92
+    },
+    "EC+Yield": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "EC+Clotting": {
+      "accuracy": 98.76,
+      "sensitivity": 94.12,
+      "precision": 100.0,
+      "f1": 96.97,
+      "roc_auc": 100.0
+    },
+    "Yield+Clotting": {
+      "accuracy": 98.76,
+      "sensitivity": 94.12,
+      "precision": 100.0,
+      "f1": 96.97,
+      "roc_auc": 99.98
+    }
+  },
+  "triplets": {
+    "Temp+pH+EC": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+pH+Yield": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+pH+Clotting": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+EC+Yield": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+EC+Clotting": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "Temp+Yield+Clotting": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+EC+Yield": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+EC+Clotting": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    },
+    "pH+Yield+Clotting": {
+      "accuracy": 99.38,
+      "sensitivity": 97.06,
+      "precision": 100.0,
+      "f1": 98.51,
+      "roc_auc": 100.0
+    },
+    "EC+Yield+Clotting": {
+      "accuracy": 100.0,
+      "sensitivity": 100.0,
+      "precision": 100.0,
+      "f1": 100.0,
+      "roc_auc": 100.0
+    }
+  }
+}
