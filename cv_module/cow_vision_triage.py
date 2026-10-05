@@ -30,7 +30,9 @@ class CowVisionTriageEngine:
     8. Posture Classifier: Standing with vertical leg pillars vs Resting with folded body.
     """
 
-    def __init__(self, model_weights="yolov8n.pt", conf_threshold=0.25):
+    def __init__(self, model_weights="yolov8n.pt", conf_threshold=0.25, confidence_threshold=None):
+        if confidence_threshold is not None:
+            conf_threshold = confidence_threshold
         self.conf_threshold = conf_threshold
         self.model = None
 

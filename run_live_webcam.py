@@ -56,7 +56,7 @@ def main():
     cv2.resizeWindow(WINDOW_TITLE, 1280, 720)
 
     # Initialize MastiFore AI Vision Triage Engine (YOLOv8 + ByteTrack + Posture Analyzer)
-    engine = CowVisionTriageEngine(confidence_threshold=0.25)
+    engine = CowVisionTriageEngine(conf_threshold=0.25)
 
     is_fullscreen = False
 
