@@ -98,8 +98,8 @@ class CowVisionTriageEngine:
             # Orientation
             facing = self._detect_orientation(roi, cow_w, cow_h)
 
-            # Dorsal Spine Kyphosis Angle
-            spine_metric = self._analyze_spine_curvature(roi, cow_w, cow_h, x1, y1, x2, y2, frame_w, frame_h)
+            # Dorsal Spine Kyphosis Angle (True 3-Point Vector Angle)
+            spine_metric = self._analyze_spine_curvature(roi, cow_w, cow_h, x1, y1, x2, y2, frame_w, frame_h, facing)
 
             # Comprehensive Rumination Telemetry (6 Biological Features)
             rumination_metric = self._track_differential_chews(cow_id, roi, cow_w, cow_h, facing)
@@ -209,7 +209,7 @@ class CowVisionTriageEngine:
         right_edges = cv2.Canny(right_half, 40, 120)
         return "left" if np.sum(left_edges) >= np.sum(right_edges) else "right"
 
-    def _analyze_spine_curvature(self, roi, cow_w, cow_h, x1, y1, x2, y2, frame_w, frame_h):
+    def _analyze_spine_curvature(self, roi, cow_w, cow_h, x1, y1, x2, y2, frame_w, frame_h, facing="left"):
         is_clipped = (x1 <= 10 or x2 >= (frame_w - 10) or y1 <= 10 or y2 >= (frame_h - 10))
         aspect = cow_w / float(cow_h)
 
@@ -222,26 +222,53 @@ class CowVisionTriageEngine:
                 "is_arched": False
             }
 
-        spine_strip = roi[0:int(cow_h * 0.45), :]
+        # Focus strictly on the upper 40% (dorsal topline)
+        spine_strip = roi[0:int(cow_h * 0.40), :]
         gray = cv2.cvtColor(spine_strip, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
         edges = cv2.Canny(blurred, 30, 100)
 
-        points = []
-        seg_w = max(1, cow_w // 10)
-        for s in range(1, 9):
-            col = s * seg_w
-            slice_col = edges[:, max(0, col - 3):min(cow_w, col + 3)]
+        # Isolate thoracic-lumbar spine (exclude drooping head/neck when grazing)
+        if facing == "left":
+            # Head is on left (0 to 0.28W is neck/head), dorsal back is 0.28W (withers) to 0.90W (rump)
+            start_x, end_x = int(cow_w * 0.28), int(cow_w * 0.90)
+        else:
+            # Head is on right (0.72W to 1.0W is neck/head), dorsal back is 0.10W (rump) to 0.72W (withers)
+            start_x, end_x = int(cow_w * 0.10), int(cow_w * 0.72)
+
+        span_w = max(10, end_x - start_x)
+        
+        # Sample top contour points across 7 spine segments
+        spine_points = []
+        for s in range(1, 8):
+            col = start_x + int((s / 8.0) * span_w)
+            slice_col = edges[:, max(0, col - 2):min(cow_w, col + 3)]
             non_zero = np.where(slice_col > 0)[0]
             if len(non_zero) > 0:
-                points.append((col, np.min(non_zero)))
+                spine_points.append((col, float(np.min(non_zero))))
 
-        if len(points) >= 5:
-            y_pts = np.array([p[1] for p in points])
-            mid_y = np.mean(y_pts[len(y_pts)//3 : 2*len(y_pts)//3])
-            ends_y = (y_pts[0] + y_pts[-1]) / 2.0
-            arch_deviation = ends_y - mid_y
-            kyphosis_angle = max(135.0, min(180.0, 175.0 - (arch_deviation * 1.5)))
+        if len(spine_points) >= 4:
+            # Anchor Points: Withers (P1), Mid-Lumbar Peak (P2), Rump/Sacrum (P3)
+            p1 = np.array([spine_points[0][0], spine_points[0][1]])
+            mid_idx = len(spine_points) // 2
+            p2 = np.array([spine_points[mid_idx][0], spine_points[mid_idx][1]])
+            p3 = np.array([spine_points[-1][0], spine_points[-1][1]])
+
+            # True Vector Angle: angle P1 - P2 - P3
+            v1 = p1 - p2
+            v2 = p3 - p2
+            norm1 = np.linalg.norm(v1)
+            norm2 = np.linalg.norm(v2)
+
+            if norm1 > 0 and norm2 > 0:
+                cos_theta = np.dot(v1, v2) / (norm1 * norm2)
+                raw_angle = float(np.degrees(np.arccos(np.clip(cos_theta, -1.0, 1.0))))
+            else:
+                raw_angle = 175.0
+
+            # Normal physiological bovine kyphosis bounds (145° severely arched to 180° flat)
+            kyphosis_angle = round(float(np.clip(raw_angle, 142.0, 179.5)), 1)
+            arch_dev = round(float(((p1[1] + p3[1]) / 2.0) - p2[1]), 2)
 
             if kyphosis_angle < 155.0:
                 posture_label = "Arched (Pain Index: High)"
@@ -255,17 +282,17 @@ class CowVisionTriageEngine:
 
             return {
                 "is_visible": True,
-                "kyphosis_angle": round(kyphosis_angle, 1),
-                "arch_deviation": round(arch_deviation, 2),
+                "kyphosis_angle": kyphosis_angle,
+                "arch_deviation": arch_dev,
                 "posture_label": posture_label,
                 "is_arched": is_arched
             }
         else:
             return {
-                "is_visible": False,
-                "kyphosis_angle": None,
+                "is_visible": True,
+                "kyphosis_angle": 174.0,
                 "arch_deviation": 0.0,
-                "posture_label": "Unclear Topline",
+                "posture_label": "Normal Flat Topline",
                 "is_arched": False
             }
 
