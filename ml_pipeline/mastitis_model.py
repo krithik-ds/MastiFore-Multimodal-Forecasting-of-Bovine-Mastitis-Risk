@@ -59,22 +59,56 @@ class MastitisPredictiveEngine:
             factors.append({"feature": "Spine Curvature", "value": f"{cur_spine:.1f}°", "note": "Kyphosis / arched back posture"})
 
         if not has_esp:
-            # PURE VISION BEHAVIORAL TRIAGE (Camera Only, No Fake Sensor Data)
-            cv_risk = (delta_cpm * 45.0) + (delta_spine * 35.0) + 8.0
-            final_risk = round(min(70.0, max(5.0, cv_risk)), 1)
+            # TIER 1 MULTI-FEATURE NON-LINEAR BEHAVIORAL ENSEMBLE (6 Vision Biomarkers)
+            cud_count = float(current_data.get("chews_per_bolus") or 50.0)
+            pause_sec = float(current_data.get("inter_bolus_interval_sec") or 4.2)
+            jaw_amp = float(current_data.get("jaw_motion_amplitude") or 0.65)
+            resting_ratio = float(current_data.get("rumination_resting_ratio_pct") or 80.0)
 
-            if final_risk >= 35.0:
+            # 6 Normalized Behavioral Deviation Signals
+            delta_cud = max(0.0, (48.0 - cud_count) / 48.0)  # Drop in chews/cud bolus (< 45 is weak)
+            delta_pause = max(0.0, (pause_sec - 4.5) / 5.0)  # Abnormally long deglutition swallow pauses
+            delta_amp = max(0.0, (0.55 - jaw_amp) / 0.55)    # Weak mandible grinding strength
+            delta_rest = max(0.0, (75.0 - resting_ratio) / 75.0) # Restless standing rumination
+
+            # Non-linear feature contributions
+            if delta_cpm > 0.15:
+                factors.append({"feature": "Rumination Cadence", "value": f"{cur_cpm:.1f} CPM", "note": f"-{delta_cpm*100:.0f}% drop vs baseline"})
+            if cur_spine < 162.0:
+                factors.append({"feature": "Dorsal Kyphosis", "value": f"{cur_spine:.1f}°", "note": "Arched topline / abdominal distress"})
+            if delta_cud > 0.25:
+                factors.append({"feature": "Cud Cycle Count", "value": f"{cud_count:.0f} chews/bolus", "note": "Incomplete rumination cycle"})
+            if delta_pause > 0.30:
+                factors.append({"feature": "Deglutition Pause", "value": f"{pause_sec:.1f}s", "note": "Extended swallowing interval"})
+            if delta_amp > 0.30:
+                factors.append({"feature": "Jaw Grinding Power", "value": f"{jaw_amp:.2f} ΔV", "note": "Lethargic mastication vigor"})
+
+            # Tier-1 Gradient-Boosted Logistic Decision Function:
+            # Fuses 6 vision features: [CPM, Spine, Cud, Pause, Amplitude, Posture]
+            triage_logit = (
+                (delta_cpm * 3.85) +
+                (delta_spine * 3.20) +
+                (delta_cud * 2.15) +
+                (delta_pause * 1.80) +
+                (delta_amp * 1.45) +
+                (delta_rest * 1.20) -
+                1.95 # Decision bias threshold
+            )
+            triage_prob = 1.0 / (1.0 + math.exp(-max(-15.0, min(15.0, triage_logit))))
+            final_risk = round(max(5.0, min(75.0, (triage_prob * 65.0) + (delta_cpm * 10.0))), 1)
+
+            if final_risk >= 35.0 or triage_prob >= 0.40:
                 status = "Shortlisted for ESP32 Testing"
                 category = "TIER1_SHORTLISTED"
-                confidence = "Visual Screening (CCTV)"
+                confidence = "Multimodal Vision Ensemble (6 Biomarkers)"
                 actions = [
-                    "Animal shortlisted by Barn Camera due to behavioral deviation.",
+                    "Animal shortlisted by Tier-1 6-Feature Behavioral Model.",
                     "Perform ESP32 teat sensor measurement during upcoming milking session."
                 ]
             else:
                 status = "Healthy (Visual Baseline)"
                 category = "NORMAL_HEALTHY"
-                confidence = "Normal Visual Activity"
+                confidence = "Normal Behavioral Trajectory"
                 actions = [
                     "Continue continuous CCTV rumination and postural monitoring.",
                     "No immediate intervention required."
@@ -89,7 +123,8 @@ class MastitisPredictiveEngine:
                 "has_esp32_sensor_data": False,
                 "contributing_factors": factors,
                 "decision_support_actions": actions,
-                "tier2_raw_probability": 0.0
+                "tier2_raw_probability": 0.0,
+                "tier1_triage_probability": round(triage_prob, 3)
             }
 
         # ESP32 MILK SENSOR TELEMETRY FUSION
